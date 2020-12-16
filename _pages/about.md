@@ -4,22 +4,21 @@ layout: single
 ---
 
 <p class="message">
-  Hey there! This page is included as an example. Feel free to customize it for your own use upon downloading. Carry on!
+I am currently working at [NVIDIA](https://www.nvidia.com/en-us/) as a Deep
+Learning Engineer. Here I develop and engineer deep learning frameworks (esp.
+TensorFlow) for improving the performance and efficiency on GPUs. I received my
+Ph.D. at the [Department of Computer Science](https://www.cs.vt.edu/)
+of [Virginia Tech](https://vt.edu/). My research topic is the performance
+portability of various computational kernels on modern accelerators, such as
+CPUs, MICs and GPUs.
 </p>
 
-In the novel, *The Strange Case of Dr. Jeykll and Mr. Hyde*, Mr. Poole is Dr. Jekyll's virtuous and loyal butler. Similarly, Poole is an upstanding and effective butler that helps you build Jekyll themes. It's made by [@mdo](https://twitter.com/mdo).
 
-There are currently two themes built on Poole:
+## Selected Publications
 
-* [Hyde](http://hyde.getpoole.com)
-* [Lanyon](http://lanyon.getpoole.com)
+Here lists some of my publications regarding high performance computing:
 
-Learn more and contribute on [GitHub](https://github.com/poole).
-
-## Setup
-
-Some fun facts about the setup of this project include:
-
+* [Doctoral Dissertation]**Kaixi Hou**. "Exploring Performance Portability for Accelerators via High-level Parallel Patterns". Virginia Tech, VTechWorks. May, 2018. [PDF](https://vtechworks.lib.vt.edu/handle/10919/84923)[Slides](assets/slides/Final_Exam_Kaixi_Hou_no_anime.pdf)
 * Built for [Jekyll](http://jekyllrb.com)
 * Developed on GitHub and hosted for free on [GitHub Pages](https://pages.github.com)
 * Coded with [Sublime Text 2](http://sublimetext.com), an amazing code editor
