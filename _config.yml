@@ -99,10 +99,10 @@ author:
   location         : "San Jose, CA"
   links:
     - label: "G. Scholar"
-      icon: "fas ai-fw ai-google-scholar-square"
+      icon: "ai ai-fw ai-google-scholar-square"
       url: "https://scholar.google.com/citations?user=4Ab_NBkAAAAJ&hl=en"
     - label: "GitHub"
-      icon: "fas fa-fw fa-github"
+      icon: "fab fa-fw fa-github"
       url: "https://github.com/kaixih"
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
