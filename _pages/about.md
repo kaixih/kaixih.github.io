@@ -1,8 +1,8 @@
 ---
 permalink: /about/
 layout: single
+title: Curriculum Vitae and Publications 
 ---
-# Curriculum Vitae and Publications
 
 ## Career
 I am currently working at [NVIDIA](https://www.nvidia.com/en-us/) as a Deep
