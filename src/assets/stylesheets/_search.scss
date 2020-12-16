@@ -1,0 +1,45 @@
+/* ==========================================================================
+   SEARCH
+   ========================================================================== */
+
+.search-searchbar {
+  @include margin-top(1);
+  @include margin-bottom(1);
+}
+
+/* Algolia search */
+
+.ais-search-box--input {
+  font-family: $sans-serif-font;
+  font-size: ms(0);
+}
+
+.ais-Highlight {
+  color: $accent-color;
+  background-color: mix(#fff, $accent-color, 90%);
+  font-style: normal;
+}
+
+.ais-hits--item {
+  p {
+    max-width: 35em;
+  }
+
+  :not(pre) > code {
+    background-color: #111;
+  }
+}
+
+.ais-search-box--powered-by-link {
+  // unset SVG background image
+  display: inline;
+  text-indent: initial;
+  overflow: hidden;
+  vertical-align: initial;
+  color: #fff;
+  background-image: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

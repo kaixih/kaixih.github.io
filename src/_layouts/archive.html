@@ -1,0 +1,25 @@
+---
+layout: default
+---
+
+{% include page-intro.html %}
+
+<article id="content" class="page__content">
+  {% if page.introduction %}
+    {{ page.introduction | markdownify }}
+  {% elsif page.layout == 'autopage_tags' %}
+    {% if tag.description %}
+      {{ tag.description | markdownify }}
+    {% else %}
+      <p>An archive of posts tagged <em>{{ page.autopages.display_name }}</em>.</p>
+    {% endif %}
+  {% endif %}
+
+  {{ content }}
+
+  {% include posts-paginated.html %}
+
+  {% if page.support == true %}
+    {% include_cached support.html %}
+  {% endif %}
+</article>

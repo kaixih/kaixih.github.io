@@ -1,0 +1,25 @@
+---
+layout: default
+---
+
+{% include page-intro.html %}
+
+<article id="content" class="page__content">
+  {% include gallery.html %}
+
+  {{ content }}
+
+  {% if page.comments == true %}
+    {% include comments.html %}
+  {% endif %}
+</article>
+
+<aside class="page__aside">
+  {% if page.toc %}
+    <nav class="page__toc">
+      <h3 class="title">On this page:</h3>
+      {{ content | toc_only }}
+    </nav>
+  {% endif %}
+  <p><a class="back-to-top" href="#nav-primary">↑ back to top</a></p>
+</aside>

@@ -1,0 +1,286 @@
+/* ==========================================================================
+   Base elements
+   ========================================================================== */
+
+html {
+  font-size: #{$base-font-size + '%'};
+
+  @include breakpoint($xl-up) {
+    font-size: #{$base-font-size * 1.125 + '%'};
+  }
+}
+
+// * {
+//   @include line-height(1);
+//   @include margin-top(0);
+// }
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  color: $text-color;
+  font-family: $serif-font;
+  font-kerning: normal;
+  word-wrap: break-word;
+}
+
+// Headings parameters [ h1: line-height: 2 × 26px, margin-top: 3 × 26px, margin-bottom: 1 × 26px ]
+$headings: (
+  h1: (2, 3, 1),
+  h2: (1.5, 2, 1),
+  h3: (1.25, 1, 1),
+  h4: (1.125, 1, 0),
+  h5: (1, 1, 0),
+  h6: (1, 1, 0)
+);
+
+// Set line-heights and margins
+@each $heading, $properties in $headings {
+  #{$heading} {
+    @include line-height(nth($properties, 1));
+    @include margin-top(nth($properties, 2));
+    @include margin-bottom(nth($properties, 3));
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $sans-serif-font;
+  text-rendering: optimizeLegibility; /* enable common ligatures and kerning */
+}
+
+h2 {
+  font-size: ms(2, $thread: h);
+
+  @include breakpoint ($md-up) {
+    font-size: ms(3, $thread: h);
+  }
+
+  @include breakpoint ($lg-up) {
+    font-size: ms(4, $thread: h);
+  }
+}
+
+h3 {
+  font-size: ms(1, $thread: h);
+
+  @include breakpoint ($md-up) {
+    font-size: ms(2, $thread: h);
+  }
+
+  @include breakpoint ($lg-up) {
+    font-size: ms(3, $thread: h);
+  }
+}
+
+h4 {
+  font-size: ms(0, $thread: h);
+
+  @include breakpoint ($md-up) {
+    font-size: ms(1, $thread: h);
+  }
+
+  @include breakpoint ($lg-up) {
+    font-size: ms(2, $thread: h);
+  }
+}
+
+h5 {
+  font-size: ms(-1, $thread: h);
+
+  @include breakpoint ($md-up) {
+    font-size: ms(0, $thread: h);
+  }
+
+  @include breakpoint ($lg-up) {
+    font-size: ms(1, $thread: h);
+  }
+}
+
+h6 {
+  font-size: ms(-2, $thread: h);
+
+  @include breakpoint ($md-up) {
+    font-size: ms(-1, $thread: h);
+  }
+
+  @include breakpoint ($lg-up) {
+    font-size: ms(0, $thread: h);
+  }
+}
+
+
+blockquote {
+  margin-right: 0;
+  margin-left: calc(-1rem - 0.25rem);
+  padding: 0 1rem;
+  border-left: 0.25rem solid #7a7e83;
+}
+
+blockquote,
+q {
+  font-style: italic;
+}
+
+blockquote cite,
+q cite {
+  font-family: $sans-serif-font;
+  font-size: 80%;
+  font-style: normal;
+  font-weight: 700;
+}
+
+blockquote :last-child {
+  margin-bottom: 0;
+}
+
+hr {
+  box-sizing: content-box;
+  display: block;
+  border: 0;
+  margin-top: 3em;
+  margin-bottom: 3em;
+  text-align: center;
+}
+
+hr::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 3px;
+  background-color: $text-color;
+}
+
+a {
+  color: #1e79ae;
+  text-decoration: none;
+
+  &:visited {
+    color: #165b83;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+p img {
+  max-width: 100%;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus:not([tabindex="-1"]) {
+  outline: 2px solid $info-color;
+  outline-offset: 2px;
+}
+
+input,
+textarea,
+select {
+  &:focus:not([tabindex="-1"]) {
+    border: 1px solid $info-color;
+    outline: 0;
+    outline-offset: 0;
+  }
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: $monospace-font;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+kbd {
+  background-color: rgb(247, 247, 247);
+  border-radius: 3px;
+  border: 1px solid rgb(204, 204, 204);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25), inset 0 0 0 2px #fff;
+  display: inline-block;
+  margin: 0 0.125em;
+  padding: 0.125em 0.5em;
+  text-shadow: 0 1px 0 #fff;
+}
+
+dt {
+  font-weight: bold;
+
+  &:not(:first-child) {
+    margin-top: 1rem;
+  }
+}
+
+dd {
+  margin: 0;
+}
+
+figure {
+  margin-left: 0;
+  margin-right: 0;
+
+  > p {
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  > img {
+    width: 100%;
+  }
+}
+
+figcaption {
+  font-size: 80%;
+  margin: 0.5rem 0;
+}
+
+img {
+  /* lazysizes plugin */
+  &[data-sizes="auto"] {
+    display: block;
+    width: 100%;
+  }
+}
+
+ul, ol {
+  @include breakpoint($md-up) {
+    padding-left: 0;
+    list-style-position: outside;
+  }
+}
+
+ul {
+  list-style-type: square;
+}
+
+li {
+
+  > img {
+    margin: 1rem 0;
+  }
+}
+
+input:required,
+textarea:required {
+  box-shadow: none;
+}
+
+iframe {
+  max-width: 100%;
+}
+
+::selection {
+  color: #fff;
+  background: #000;
+}

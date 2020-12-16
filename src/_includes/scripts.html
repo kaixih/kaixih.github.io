@@ -1,0 +1,8 @@
+{% if jekyll.environment == 'production' and site.google_analytics %}
+  {% include_cached google-analytics.html %}
+{% endif %}
+
+{% assign index_js = site.data.js-manifest['index.js'] | default: 'index.js' | prepend: 'assets/javascripts/' | relative_url %}
+
+<script async src="{{ index_js }}"></script>
+{% include_cached algolia-search-scripts.html %}

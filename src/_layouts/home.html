@@ -1,0 +1,13 @@
+---
+layout: default
+---
+
+<article id="content" class="page__content">
+  {% if page.section %}
+    <section class="sections">
+      {% include section.html %}
+    </section>
+  {% endif %}
+
+  {{ content }}
+</article>

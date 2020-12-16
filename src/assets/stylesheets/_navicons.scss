@@ -1,0 +1,100 @@
+/* ==========================================================================
+   Navicons
+   ========================================================================== */
+
+.navicon-button {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  min-height: $site-image-height;
+  outline: none;
+  border: 0;
+  background-color: transparent;
+  line-height: 5 * $navicon-height;
+  cursor: pointer;
+  transition: $navicon-duration / 2;
+  user-select: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  .navicon::before,
+  .navicon::after {
+    transition-duration: $navicon-duration / 2;
+  }
+
+  &:hover,
+  &:focus {
+    transition-duration: $navicon-duration;
+
+    .navicon::before,
+    .navicon::after {
+      transition-duration: $navicon-duration / 2;
+    }
+
+    .navicon::before,
+    .navicon::after {
+      left: -0.25em;
+    }
+  }
+}
+
+.navicon {
+  position: relative;
+  width: $navicon-width;
+  height: $navicon-height;
+  background: $navicon-content-bg;
+  transition-duration: $navicon-duration;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    display: block;
+    width: $navicon-width;
+    height: $navicon-height;
+    background: $navicon-content-bg;
+    transition-duration: $navicon-duration $navicon-duration / 2;
+  }
+
+  &::before {
+    top: (2 * $navicon-height);
+  }
+  &::after {
+    top: (-2 * $navicon-height);
+  }
+}
+
+.open:not(.steps) .navicon::before,
+.open:not(.steps) .navicon::after {
+  top: 0 !important;
+}
+
+.open {
+  transform: scale($navicon-toggled-size);
+
+  .navicon::before,
+  .navicon::after {
+    transition-duration: $navicon-duration;
+  }
+
+  /* × */
+  .x .navicon {
+    background: transparent;
+
+    &::before,
+    &::after {
+      background: #fff;
+    }
+
+    &::before { transform: rotate(-45deg); }
+    &::after { transform: rotate(45deg); }
+  }
+
+  .navicon::before,
+  .navicon::after {
+    left: 0;
+  }
+}

@@ -1,0 +1,50 @@
+/* ==========================================================================
+   REVIEW BOXES
+   ========================================================================== */
+
+.review__wrapper {
+  background-color: $text-color;
+  border-radius: $border-radius;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  padding: 20px;
+  position: relative;
+
+  a {
+    color: $text-color;
+  }
+}
+
+h5.review__title {
+  color: #fff;
+  font-size: ms(1);
+  font-weight: bold;
+  margin: 0;
+}
+
+.review__title-summary {
+  font-size: ms(1);
+  font-weight: bold;
+}
+
+.review__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    border-bottom: 1px solid #fff;
+    display: flex;
+    font-weight: bold;
+    justify-content: space-between;
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+  }
+}
+
+.review__description {
+  a {
+    color: #fff;
+  }
+}

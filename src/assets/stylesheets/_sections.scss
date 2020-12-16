@@ -1,0 +1,194 @@
+/* ==========================================================================
+   Sections
+   ========================================================================== */
+
+.sections {
+  margin-bottom: 2rem;
+}
+
+.section {
+  background-color: $section-bg-color;
+
+  .inner {
+    max-width: 80%;
+    padding: 10% 0 10% 5%;
+
+    @include breakpoint($md-up) {
+      max-width: 60%;
+      padding: 5% 0 5% 5%;
+    }
+
+    @include breakpoint($lg-up) {
+      max-width: 50%;
+      padding-left: 10%;
+    }
+  }
+
+  .btn {
+    background-color: $text-color;
+    color: #fff !important;
+
+    &:hover {
+      background-color: mix(#fff, $text-color, 10%);
+    }
+  }
+}
+
+.section__text {
+  /* remove space after last child element */
+  > *:last-child {
+    margin-bottom: 0;
+  }
+
+  /* text links */
+  a:not(.btn) {
+    border-bottom: 1px dotted currentColor;
+    color: currentColor;
+    text-decoration: none;
+
+    &:hover {
+      border-bottom-style: solid;
+    }
+  }
+}
+
+.section__title {
+  .heading {
+    margin-top: 0;
+    @include margin-bottom(1);
+    color: #fff;
+    font-family: $alternate-font;
+    font-weight: 700;
+    font-size: ms(3);
+    font-variant-ligatures: common-ligatures;
+    font-feature-settings: "kern" on, "liga" on, "clig" on, "calt" on;
+    line-height: 1.25;
+
+    @include breakpoint($md-up) {
+      padding-right: 5%;
+    }
+
+    @include breakpoint ($lg-up) {
+      font-size: ms(4);
+    }
+
+    span {
+      padding: 0 0.5em;
+      line-height: 1.5;
+      box-decoration-break: clone;
+      background-color: #000;
+    }
+  }
+}
+
+.section__actions {
+  @include list-unstyled;
+
+  li {
+    display: inline-block;
+  }
+}
+
+.section__more {
+  @include breakpoint($lg-up) {
+    font-size: ms(1);
+  }
+}
+
+/*
+   Section specific
+   ========================================================================== */
+
+.section {
+  &__inverse {
+    background-color: $section-dark-bg-color;
+    color: #fff;
+    position: relative;
+
+    .inner {
+      position: relative;
+      z-index: 1; /* fix overlap with scrimgradient */
+    }
+
+    .section__image {
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+
+      &::before {
+        @include scrimgradient("to right", $section-dark-bg-color);
+        content: "";
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    }
+
+    .section__title,
+    .section__more {
+      text-shadow: 1px 01px 1px rgba($section-dark-bg-color, 0.75);
+    }
+
+    .btn {
+      background-color: #fff;
+      color: $section-dark-bg-color !important;
+
+      &:hover {
+        background-color: mix($section-dark-bg-color, #fff, 10%);
+      }
+    }
+  }
+
+  &__about {
+    background-color: $section-about-bg-color;
+
+    .section__image {
+      &::before {
+        @include scrimgradient("to right", $section-about-bg-color);
+      }
+    }
+
+    .section__title,
+    .section__more {
+      text-shadow: 1px 01px 1px rgba($section-about-bg-color, 0.75);
+    }
+
+    .btn {
+      color: $section-about-bg-color !important;
+
+      &:hover {
+        background-color: mix($section-about-bg-color, #fff, 10%);
+      }
+    }
+  }
+
+  &__work {
+    background-color: $section-work-bg-color;
+
+    .section__image {
+
+      &::before {
+        @include scrimgradient("to right", $section-work-bg-color);
+      }
+    }
+
+
+    .section__title,
+    .section__more {
+      text-shadow: 1px 1px 1px rgba($section-work-bg-color, 0.75);
+    }
+
+    .btn {
+      color: $section-work-bg-color !important;
+
+      &:hover {
+        background-color: mix($section-work-bg-color, #fff, 10%);
+      }
+    }
+  }
+}

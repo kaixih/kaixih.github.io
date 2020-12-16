@@ -1,0 +1,27 @@
+---
+layout: default
+---
+
+{% assign layout = page.layout %}
+{% assign sorted_entries = site.work | sort: 'order' %}
+{% include page-intro.html %}
+
+<article id="content" class="page__content">
+  {% if page.introduction %}
+    {{ page.introduction | markdownify }}
+  {% elsif page.layout == 'autopage_tags' %}
+    {% if tag.description %}
+      {{ tag.description | markdownify }}
+    {% else %}
+      <p>An archive of posts tagged <em>{{ page.autopages.display_name }}</em>.</p>
+    {% endif %}
+  {% endif %}
+
+  {{ content }}
+
+  <div class="gallery">
+    {% for post in sorted_entries %}
+      {% include entry.html class="gallery-item" %}
+    {% endfor %}
+  </div>
+</article>

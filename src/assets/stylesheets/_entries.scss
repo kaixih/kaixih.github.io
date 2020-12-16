@@ -1,0 +1,125 @@
+/* ==========================================================================
+   Entries (Posts, collection documents, etc.)
+   ========================================================================== */
+
+.entry {
+  position: relative;
+  margin-bottom: 3em;
+  max-width: 35em;
+}
+
+.entry__title {
+  margin-bottom: 0;
+  font-weight: 700;
+  line-height: 1.25;
+
+  @include breakpoint($md-up) {
+    font-size: ms(2);
+  }
+
+  a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.entry__meta {
+  @include margin-bottom(0.5);
+  font-family: $monospace-font;
+  font-size: ms(-2);
+  text-transform: uppercase;
+
+  *:not(:first-child) {
+    &::before {
+      content: ' · ';
+    }
+  }
+}
+
+.entry__image {
+  margin-bottom: 1em;
+}
+
+.entry__excerpt {
+  a {
+    position: relative;
+    z-index: 5;
+  }
+}
+
+.entries__columns {
+  $col-gap: 1em;
+  $width: calc(33.3333% - #{$col-gap});
+
+  .title {
+    margin-bottom: 0.25em;
+    padding-bottom: 0.25em;
+    border-bottom: 2px solid #000;
+    font-size: ms(1, $thread: h);
+
+    @include breakpoint ($xl-up) {
+      font-size: ms(2, $thread: h);
+    }
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @include breakpoint($md-up) {
+      display: flex;
+      flex-wrap: wrap;
+
+      &:after {
+        width: $width;
+      }
+    }
+  }
+
+  li {
+    display: block;
+
+    @include breakpoint($md-up) {
+      margin-right: 1.5 * $col-gap;
+      width: $width;
+
+      // Remove margin in last column
+      &:nth-of-type(3n) {
+        margin-right: 0;
+      }
+
+      // For when there are two items in the last row
+      &:nth-of-type(3n-2):nth-last-of-type(2) {
+        margin-bottom: 0;
+      }
+
+      // For when the last row is complete
+      &:nth-of-type(3n-1):nth-last-of-type(2)
+      &:nth-of-type(3n-2):nth-last-of-type(3) {
+        margin-bottom: 0;
+      }
+    }
+
+    a {
+      border-bottom: 1px solid $border-color;
+      color: inherit;
+      display: flex;
+      justify-content: space-between;
+      padding: 0.25em 0;
+      text-decoration: none;
+    }
+
+    strong {
+      font-family: $alternate-font;
+    }
+
+    .count {
+      color: mix(#fff, $text-color, 25%);
+    }
+  }
+}

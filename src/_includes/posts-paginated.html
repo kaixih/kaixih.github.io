@@ -1,0 +1,25 @@
+{% if paginator.posts or page.autogen %}
+  {% for post in paginator.posts %}
+    {% include entry.html %}
+  {% endfor %}
+
+  <nav class="pagination">
+    <ul>
+      {% if paginator.previous_page %}
+        <li>
+          <a href="{{ paginator.previous_page_path | relative_url }}" class="newer-posts">← newer posts</a>
+        </li>
+      {% endif %}
+      {% if page.autogen %}
+        <li>page {{ page.pagination_info.curr_page }} of {{ page.pagination_info.total_pages }}</li>
+      {% else %}
+        <li>page {{ paginator.page }} of {{ paginator.total_pages }}</li>
+      {% endif %}
+      {% if paginator.next_page %}
+        <li>
+          <a href="{{ paginator.next_page_path | relative_url }}" class="older-posts">older posts →</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}

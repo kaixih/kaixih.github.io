@@ -1,0 +1,39 @@
+/* ==========================================================================
+   Browser Frame
+   ========================================================================== */
+
+$browser-window-height: 30px;
+$border-radius: 0.125em;
+
+.browser-frame {
+  position: relative;
+  @include margin-bottom(1.5);
+  padding: $browser-window-height 0 0;
+  border: 1px solid #ccc;
+  border-radius: $border-radius;
+  background-color: #fff;
+  box-shadow: 0 0.25em 1em rgba(#000, 0.25);
+
+  &::before {
+    content: "\2022\2022\2022";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: $browser-window-height;
+    margin: 0;
+    padding: (0.5 * $browser-window-height) 0;
+    background: mix(#000, #fff, 25%);
+    color: mix(#000, #fff, 50%);
+    font-family: $monospace-font;
+    font-size: $browser-window-height;
+    line-height: 0;
+    text-indent: (0.5 * $browser-window-height);
+  }
+
+  > * {
+    display: block;
+    vertical-align: bottom;
+    border-radius: 0 0 $border-radius $border-radius;
+  }
+}

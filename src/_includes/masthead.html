@@ -1,0 +1,20 @@
+<header class="site__header">
+  {% if page.url == '/' %}
+    <h1 class="site__name">
+      <a href="{{ '/' | relative_url }}">{{ site.title | escape }}</a>
+    </h1>
+  {% else %}
+    <div class="site__name">
+      <a href="{{ '/' | relative_url }}">{{ site.title | escape }}</a>
+    </div>
+  {% endif %}
+
+  <div class="menu__toggle">
+    <button class="toggle navicon-button x" type="button">
+      <span class="toggle-inner">
+        <span class="toggle-label visually-hidden">menu</span>
+        <span class="navicon"></span>
+      </span>
+    </button>
+  </div>
+</header>

@@ -1,0 +1,46 @@
+/* ==========================================================================
+   PAPER COLOR PALETTE SWATCHES
+   ========================================================================== */
+
+.palette {
+  background: #171716 url("../images/paper-53-palette-bk.png");
+  border-radius: 10px;
+  margin-bottom: 1em;
+  width: 100%;
+
+  &__row {
+    padding: 0.25em 0;
+    text-align: center;
+    width: 100%;
+
+    a {
+      margin: 0.25em;
+    }
+  }
+
+  /* spacing above and below rows */
+  div:first-child {
+    padding-top: 1em;
+  }
+
+  div:last-child {
+    padding-bottom: 1em;
+  }
+
+  &__swatch {
+    border-radius: 50%;
+    border: 3px solid #000;
+    height: 60px;
+    margin: 0 auto;
+    width: 60px;
+
+    @include breakpoint($md-up) {
+      height: 110px;
+      width: 110px;
+    }
+
+    &:hover {
+      border: 3px solid #fff;
+    }
+  }
+}

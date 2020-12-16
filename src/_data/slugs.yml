@@ -1,0 +1,49 @@
+# slugs
+
+articles:
+  name: "Blog articles"
+
+notes:
+  name: "Notes"
+
+mastering-paper:
+  name: "Mastering Paper for iOS"
+
+paperfaces:
+  name: "PaperFaces portraits"
+
+procreate-paintings:
+  name: "Procreate paintings"
+
+tiny-paintings:
+  name: "Tiny paintings"
+
+work:
+  name: "Work"
+
+faqs:
+  name: "Frequently asked questions"
+
+about:
+  name: "About"
+
+contact:
+  name: "Contact"
+
+support:
+  name: "Support"
+
+404:
+  name: "Not found"
+
+sitemap:
+  name: "Sitemap"
+
+style-guide:
+  name: "Style guide"
+
+terms:
+  name: "Terms &amp; Policies"
+
+tag:
+  name: "Tags"

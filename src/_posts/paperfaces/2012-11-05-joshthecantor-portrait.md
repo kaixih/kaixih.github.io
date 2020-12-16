@@ -1,0 +1,14 @@
+---
+title: "Goatee and blue v-neck shirt"
+excerpt: "PaperFaces portrait of @joshthecantor drawn with Paper for iOS on an iPad."
+image: 
+  path: &image /assets/images/paperfaces-joshthecantor-twitter.jpg 
+  feature: *image
+  thumbnail: /assets/images/paperfaces-joshthecantor-twitter-150.jpg
+categories: [paperfaces]
+tags: [portrait, illustration, Paper for iOS]
+---
+
+PaperFaces portrait of [@joshthecantor](https://twitter.com/joshthecantor).
+
+{% include_cached boilerplate/paperfaces.md %}

@@ -1,0 +1,21 @@
+/* ==========================================================================
+   THUMBNAIL GRIDS
+   ========================================================================== */
+
+/* Thumbnail image grid (default content width) */
+
+/**
+ *
+ * Example usage:
+ *  <ul class="gallery-thumbnails">
+ *    <li><a href="#"><img src="image.jpg" alt=""></a></li>
+ *    <li><a href="#"><img src="image.jpg" alt=""></a></li>
+ *    <li><a href="#"><img src="image.jpg" alt=""></a></li>
+ *  </ul>
+ *
+ */
+
+/* list override */
+.list .th-grid a {
+  margin-right: initial;
+}

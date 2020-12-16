@@ -1,0 +1,19 @@
+paper-for-ios:
+  title: "Paper for iOS"
+  description: "A collection of art created on iPad with the iOS app **Paper by WeTransfer**. Tutorials and other learnings related to my [**Mastering Paper**](/mastering-paper/) series are also included."
+
+paper-by-53:
+  title: "Paper by FiftyThree"
+  description: "A collection of art created on iPad with the iOS app **Paper by WeTransfer**. Tutorials and other learnings related to my [**Mastering Paper**](/mastering-paper/') series are also included."
+
+sktchy:
+  title: "Sktchy"
+  description: "Portraits painted and drawn in a variety of media inspired by photographs shared on [**Sktchy**](https://get.sktchy.com/)."
+
+jekyll:
+  title: "Jekyll"
+  description: "An archive of posts related to [**Jekyll**](https://jekyllrb.com) --- a Ruby Gem that transforms plain text into static websites and blogs."
+
+til:
+  title: "Today I learned"
+  description: "Learnings captured for educational purposes and posterity."
