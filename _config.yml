@@ -98,7 +98,7 @@ author:
   bio              : "Deep learning, GPU Computing, Computer Science"
   location         : "San Jose, CA"
   links:
-    - label: "Google Scholar"
+    - label: "G. Scholar"
       icon: "ai ai-google-scholar-square"
       url: "https://scholar.google.com/citations?user=4Ab_NBkAAAAJ&hl=en"
     - label: "GitHub"
