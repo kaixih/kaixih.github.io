@@ -18,7 +18,7 @@ CPUs, MICs and GPUs.
 
 Here lists some of my publications regarding high performance computing:
 
-* [Doctoral Dissertation]**Kaixi Hou**. "*Exploring Performance Portability for Accelerators via High-level Parallel Patterns*". Virginia Tech, VTechWorks. May, 2018. [PDF](https://vtechworks.lib.vt.edu/handle/10919/84923), [Slides](/assets/slides/Final_Exam_Kaixi_Hou_no_anime.pdf)
+* [Doctoral Dissertation] **Kaixi Hou**. "*Exploring Performance Portability for Accelerators via High-level Parallel Patterns*". Virginia Tech, VTechWorks. May, 2018. [PDF](https://vtechworks.lib.vt.edu/handle/10919/84923), [Slides](/assets/slides/Final_Exam_Kaixi_Hou_no_anime.pdf)
 * Built for [Jekyll](http://jekyllrb.com)
 * Developed on GitHub and hosted for free on [GitHub Pages](https://pages.github.com)
 * Coded with [Sublime Text 2](http://sublimetext.com), an amazing code editor
