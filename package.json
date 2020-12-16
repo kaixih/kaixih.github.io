@@ -52,7 +52,7 @@
     "gulp-util": "^3.0.7",
     "lity": "^2.3.1",
     "modularscale-sass": "^3.0.8",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "postcss": "^6.0.13",
     "require-dir": "^1.2.0",
     "rev-del": "^2.0.0",
