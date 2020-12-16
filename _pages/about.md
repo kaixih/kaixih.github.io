@@ -1,6 +1,6 @@
 ---
 permalink: /about/
-layout: default
+layout: single
 ---
 
 <p class="message">
