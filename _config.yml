@@ -95,12 +95,11 @@ analytics:
 author:
   name             : "Kaixi Hou"
   avatar           : /assets/images/bio-photo.png
-  bio              : "Deep learning\n\nHigh Performance Computing\n\nComputer Science"
+  bio              : "Deep learning, GPU Computing, Computer Science"
   location         : "San Jose, CA"
-  email            :
   links:
     - label: "Google Scholar"
-      icon: "ai ai-google-scholar"
+      icon: "ai ai-google-scholar-square"
       url: "https://scholar.google.com/citations?user=4Ab_NBkAAAAJ&hl=en"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
