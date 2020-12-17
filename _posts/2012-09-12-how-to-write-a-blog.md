@@ -1,9 +1,8 @@
 ---
 layout: post
-author_profile: true
-comments: true
-share: true
 title:  "Welcome to Jekyll!"
+author: Kaixi Hou
+comments: true
 ---
 # Welcome
 
