@@ -6,6 +6,6 @@ comments: true
 ---
 # Welcome
 
-**Hello world**, this is my first Jekyll blog post.
+**Hello world**, this is my first Jekyll blog post. A
 
 I hope you like it!
