@@ -1,7 +1,8 @@
 ---
 layout: post
 author_profile: true
-permalink: /latest/
+comments: true
+share: true
 title:  "Welcome to Jekyll!"
 ---
 # Welcome
