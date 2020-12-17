@@ -1,5 +1,7 @@
 ---
 layout: post
+author_profile: true
+permalink: /latest/
 title:  "Welcome to Jekyll!"
 ---
 # Welcome
