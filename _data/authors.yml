@@ -1,17 +1,11 @@
 # /_data/authors.yml
 
-Kaixi Hou:
-  name        : "Kaixi Hou"
-  bio         : "ABC"
-  avatar      : "/assets/images/bio-photo-2.jpg"
+kaixi_hou:
+  name        : Kaixi Hou
+  bio         : ABC
+  avatar      : /assets/images/bio-photo.png
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      url: "mailto:xfd@demo.com"
-    - label: "Website"
-      icon: "fas fa-fw fa-link"
-      url: "https://thewhip.com"
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/extravagantman"
+      url: "mailto:kaixihou@gmail.com"
 

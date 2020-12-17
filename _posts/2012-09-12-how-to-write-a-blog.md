@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Welcome to Jekyll!"
-author: Kaixi Hou
+author: kaixi_hou
 comments: true
 ---
 # Welcome
