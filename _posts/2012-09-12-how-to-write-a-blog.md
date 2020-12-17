@@ -1,5 +1,5 @@
 ---
-layout: archive
+layout: posts
 title:  "Welcome to Jekyll!"
 author: kaixi_hou
 comments: true
