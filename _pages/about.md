@@ -1,6 +1,7 @@
 ---
 permalink: /about/
 layout: single
+author_profile: true
 title: Curriculum Vitae and Publications 
 ---
 
