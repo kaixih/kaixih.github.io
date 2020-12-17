@@ -49,3 +49,8 @@ Proceedings of the 29th ACM International Conference on Supercomputing, Jun 2015
 * [P2S2'14] **Kaixi Hou**, Hao Wang, Wu-chun Feng. "*Delivering Parallel Programmability to the Masses via the Intel MIC Ecosystem: A Case Study*". 
 Proceedings of the 7th International Workshop on Parallel Programming Models and Systems Software for High-End Computing, Sept 2014.
 [PDF](/assets/papers/floyd-camera-ready.pdf),[Slides](/assets/slides/p2s2'14-floyd-slides.pdf)
+
+## Professional Services
+* Program Committee: AsHES (2019), ICPP (2019), EuroPar (2019)
+* Reviewer (Journal): TPDS (2018-19), FGCS (2018-19), Parco (2018-19), CCPE (2019-2020)
+* Reviewer (Conferences & Workshops): ICCD (2016), HPCC (2017), WRAp (2017), AsHES (2018), ICS (2018), CBDCom (2018)
