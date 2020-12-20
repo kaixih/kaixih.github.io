@@ -2,6 +2,9 @@
 layout: posts
 title:  "Inside Normalizations of Tensorflow"
 author: kaixi_hou
+search                   : true
+search_full_content      : true
+search_provider          : google
 comments: true
 ---
 ## Introduction
