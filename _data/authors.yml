@@ -2,7 +2,7 @@
 
 kaixi_hou:
   name        : Kaixi Hou
-  bio         : ABC
+  bio         : "Deep learning, GPU Computing, Computer Science"
   avatar      : /assets/images/bio-photo.png
   links:
     - label: "Email"

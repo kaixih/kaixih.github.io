@@ -13,9 +13,10 @@ practical guide to using the relavant norm APIs from Tensorflow, and give you an
 idea when the fast CUDNN kernels will be used in the backend on GPUs.
 
 This post will only checks the BatchNorm, LayerNorm, and InstanceNorm. In
-essence, all these norms perform a 2-step calculation: (1) computing mean and
-variance (also called statistics, moments, etc.); (2) applying scale and offset
-(two learnable parameters). The trickly part is that the axis values and output
+essence, all these norms perform a 2-step calculation:
+1. computing mean and variance (also called statistics, moments, etc.);
+2. applying scale and offset (two learnable parameters).
+The trickly part is that the axis values and output
 shapes from (1) and (2) vary depending on normalization types and sometimes the
 official API document might be misleading. Therefore, I am going to review in
 practice how to use these three norm APIs and what happens under the hood.
@@ -40,7 +41,7 @@ reduced memory footprint.
 
 The following example checks the shape of gamma/beta and verify if the mean/var
 are computed along the given axis.
-```
+```python
   batch_norm = layers.BatchNormalization(axis=1, center=True, scale=True)
   y = batch_norm(x, training=True)
   print("Gamma shape:", batch_norm.weights[0].shape) # Output: (12,)
@@ -73,7 +74,7 @@ kernels.
 
 The following example checks the shape of gamma/beta and verify if the mean/var
 are computed along the given axes.
-```
+```python
   layer_norm = layers.LayerNormalization(axis=(1,2,3), center=True, scale=True)
   y = layer_norm(x)
   print("Gamma shape:", layer_norm.weights[0].shape) # Output: (12, 3, 2)
@@ -100,7 +101,7 @@ non-singleton dimensions in the mean/var).
 
 The following example checks the shape of gamma/beta and verify if the mean/var
 are computed along the given axes.
-```
+```python
   instance_norm = tfa.layers.InstanceNormalization(axis=1, center=True,
                                                    scale=True)
   y = instance_norm(x)
