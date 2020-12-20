@@ -15,8 +15,8 @@ adequate background of these norms, in this blog post, I'd like to provide a
 practical guide to using the relavant norm APIs from Tensorflow, and give you an
 idea when the fast CUDNN kernels will be used in the backend on GPUs.
 
-This post will only checks the BatchNorm, LayerNorm, and InstanceNorm. In
-essence, all these norms perform a 2-step calculation:
+This post will only checks the **BatchNorm**, **LayerNorm**, and
+**InstanceNorm**. In essence, all these norms perform a 2-step calculation:
 1. Computing mean and variance (also called statistics, moments, etc.);
 2. Applying scale and offset (a.k.a gamma/beta, which are two learnable
 parameters).
@@ -122,6 +122,8 @@ are computed along the given axes.
         may_pass = False
   print("Test:", "Pass!" if may_pass else "Fail!")
 ```
+
+Similaly, the axis argument should take -1 or 3 when the NHWC is used.
 
 ## Reference
 * [Tensorflow Batch Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)
