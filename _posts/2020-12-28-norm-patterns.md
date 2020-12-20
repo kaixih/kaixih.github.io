@@ -119,7 +119,7 @@ are computed along the given axes.
 ```
 
 ## Reference
-[Tensorflow Layer Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/LayerNormalization)
-[Tensorflow Batch Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)
-[Tensorflow Instance Normalization API](https://www.tensorflow.org/addons/api_docs/python/tfa/layers/InstanceNormalization)
+* [Tensorflow Batch Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)
+* [Tensorflow Layer Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/LayerNormalization)
+* [Tensorflow Instance Normalization API](https://www.tensorflow.org/addons/api_docs/python/tfa/layers/InstanceNormalization)
 
