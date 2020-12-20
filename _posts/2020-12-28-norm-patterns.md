@@ -23,8 +23,8 @@ parameters).
 
 The trickly part is that the axis values and output
 shapes from (1) and (2) vary depending on normalization types and sometimes the
-official API document might be misleading. Therefore, I am going to review in
-practice how to use these three norm APIs and what happens under the hood.
+official API document might be misleading. Therefore, I am going to review how
+to use these three norm APIs in practice and what happens under the hood.
 
 Note: the sample codes below use BatchNormalization and LayerNormalization from
 TF Keras Layers and InstanceNormalization from TF Addons.
@@ -37,11 +37,12 @@ here. Under the hood, the API will perform step (1) and (2) along the same axis
 and you will get the mean/var in shape of (1, 12, 1, 1) and the scale/offset in
 shape of (12,). Thanks to the broadcasting rules, the step (2) can be easily
 implemented. It is also for this reason that `nn.batch_normalization` is used as
-the backend in other types of normalization.  Other than this "generic"
-`nn.batch_normalization`, the API will call the faster CUDNN API, e.g.,
-cudnnBatchNormalizationForwardTraining(), whenever possible (e.g., the data type
-and axis fulfill some requirements and of cause the GPU can be detected) and
-benefit from its efficient fused parallel kernels and reduced memory footprint.
+the backend in other types of normalization.  Instead of this "generic"
+`nn.batch_normalization`, the backend will call the faster CUDNN API, e.g.,
+`cudnnBatchNormalizationForwardTraining()` whenever possible (e.g., the data
+type and axis fulfill some requirements and of cause the GPU can be detected) so
+that we can benefit from its efficient fused parallel kernels and reduced memory
+footprint.
 
 The following example checks the shape of gamma/beta and verify if the mean/var
 are computed along the given axis.
@@ -67,7 +68,7 @@ Continuing with the same example tensor above, LayerNorm usually expects the
 include the batch axis. Here one legit `axis` is (1,2,3), meaning we include all
 features for each sample. Under the hood, the computed mean/var will be in shape
 of (2, 1, 1, 1) and the scale/offset in (12, 3, 2). The "generic"
-`nn.batch_normalization` has no problem to realize the step (2) with the
+`nn.batch_normalization` has no problem to realize the step (2) due to the
 broadcasting rules. However, as for the CUDNN APIs, they lack the support for
 layer norm and even worse we cannot directly call its batch norm APIs since this
 computational pattern breaks the CUDNN's assumption that the two shapes of step
@@ -103,7 +104,7 @@ producing the output in shape of (2, 12, 1, 1). On the other hand, the
 scale/offset will still be (12,). So, it would be tricky to put this
 computational pattern under the disguise of the batch norm as we do in layer
 norm (because we need to deal with two non-singleton dimensions in the
-mean/var).
+mean/var and this apparently fails to follow the CUDNN's assumption).
 
 The following example checks the shape of gamma/beta and verify if the mean/var
 are computed along the given axes.
