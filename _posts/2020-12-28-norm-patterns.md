@@ -4,7 +4,7 @@ title:  "Inside Normalizations of Tensorflow"
 author: kaixi_hou
 comments: true
 ---
-# Introduction
+## Introduction
 Recently I came across with optimizing the normalization layers in Tensorflow.
 Most online articles are talking about the mathematical definitions of different 
 normalization and their advantages over one another. Assuming that you have
@@ -14,8 +14,9 @@ idea when the fast CUDNN kernels will be used in the backend on GPUs.
 
 This post will only checks the BatchNorm, LayerNorm, and InstanceNorm. In
 essence, all these norms perform a 2-step calculation:
-1. computing mean and variance (also called statistics, moments, etc.);
-2. applying scale and offset (two learnable parameters).
+1. Computing mean and variance (also called statistics, moments, etc.);
+2. Applying scale and offset (two learnable parameters).
+
 The trickly part is that the axis values and output
 shapes from (1) and (2) vary depending on normalization types and sometimes the
 official API document might be misleading. Therefore, I am going to review in
@@ -24,7 +25,7 @@ practice how to use these three norm APIs and what happens under the hood.
 Note: the sample codes below use BatchNormalization and LayerNormalization from
 TF Keras Layers and InstanceNormalization from TF Addons.
 
-# Batch Normalization
+## Batch Normalization
 Let's start with an example tensor in shape of (2, 12, 3, 2) and it's format is
 NCHW (or "channels_first"), meaning there are 12 channels and its axis is 1.
 BatchNorm expects the `axis` argument to be channels axis and thus we can put 1
@@ -57,7 +58,7 @@ are computed along the given axis.
 Similaly, the axis argument should take -1 or 3 when the NHWC (or
 "channels_last") is used.
 
-# Layer Normalization
+## Layer Normalization
 Continuing with the the same example tensor above, LayerNorm usually expects
 the `axis` argument to take in the features within one sample; hence, we must
 not include the batch axis. Here one legit `axis` is (1,2,3), meaning we include
@@ -90,7 +91,7 @@ are computed along the given axes.
 Similaly, for the NHWC tensors, the axis argument can take the same (1,2,3) as
 in the NCHW use case.
 
-# Instance Normalization
+## Instance Normalization
 Finally, in InstanceNorm, the expected axis is same with BatchNorm, i.e. the
 channels axis. So, for the same example above, we would give axis=1. Internally,
 however, the batch axis will also be used to compute the mean/var, producing the
@@ -116,4 +117,9 @@ are computed along the given axes.
         may_pass = False
   print("Test:", "Pass!" if may_pass else "Fail!")
 ```
+
+## Reference
+[Tensorflow Layer Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/LayerNormalization)
+[Tensorflow Batch Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)
+[Tensorflow Instance Normalization API](https://www.tensorflow.org/addons/api_docs/python/tfa/layers/InstanceNormalization)
 
