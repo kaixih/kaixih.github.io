@@ -2,9 +2,9 @@
 layout: posts
 title:  "Tensorflow Keras RNN and its Backend CUDNN RNN"
 author: kaixi_hou
-search                   : true
-search_full_content      : true
-search_provider          : google
+#search                   : true
+#search_full_content      : true
+#search_provider          : google
 comments: true
 ---
 ## Introduction
@@ -42,7 +42,7 @@ This following shows under the hood what the CUDNN is receiving for the weights 
 Keras Kernel Weights: 
 
 
-|0.01492912 |-0.08340913 |-0.13510555  |0.7274594   |0.27867514 |-0.22769517 |-0.09443533  |0.14927697 |-0.06407022 |
+|<span style="color: green"> 0.01492912 </span> |-0.08340913 |-0.13510555  |0.7274594   |0.27867514 |-0.22769517 |-0.09443533  |0.14927697 |-0.06407022 |
 |0.3732596  |-0.46085864 | 0.0720188   |0.07225263  |0.0731563  |-0.32511705 |-0.5776096   |0.19336885 | 0.5521658  |
 
 [[ 0.01492912 -0.08340913 -0.13510555  0.7274594   0.27867514 -0.22769517 -0.09443533  0.14927697 -0.06407022]
