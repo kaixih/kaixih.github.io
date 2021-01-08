@@ -25,10 +25,14 @@ Note: this post assumes people has already understand the RNN structure of GRU
 and LSTM. And will borrow the formula from NVIDIA CUDNN documentation for reference.
 
 ## GRU
-it = σ(Wixt + Riht-1 + bWi + bRi)
-rt = σ(Wrxt + Rrht-1 + bWr + bRr)
-h't = tanh(Whxt + rt◦(Rhht-1 + bRh) + bWh)
-ht = (1 - it) ◦ h't + it ◦ ht-1
+
+GRU formula |
+--- |
+it = σ(W<sub>i</sub>xt + R<sub>i</sub>ht-1 + bW<sub>i</sub> + bR<sub>i</sub>) |
+rt = σ(W<sub>r</sub>xt + R<sub>r</sub>ht-1 + bW<sub>r</sub> + bR<sub>r</sub>) |
+h't = tanh(W<sub>h</sub>xt + rt◦(R<sub>h</sub>ht-1 + bR<sub>h</sub>) + bW<sub>h</sub>) |
+ht = (1 - it) ◦ h't + it ◦ ht-1 |
+
 hiddenSize  = 3
 inputSize  = 2
 This formula represents a double bias senario, meaning for each weights by input multiplication, we will apply a bias addition.
@@ -51,7 +55,7 @@ Keras Kernel Weights:
 #006400 = darkgreen
 #8B0000 = darkred
 #FFD700 = gold --->
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #90EE90">  0.014929</td>
     <td style="background-color: #90EE90"> -0.083409</td>
@@ -78,7 +82,7 @@ Keras Kernel Weights:
 
 
 Keras Recurrent Weights: 
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #008000"> -0.176383</td>
     <td style="background-color: #008000"> -0.344644</td>
@@ -115,7 +119,7 @@ Keras Recurrent Weights:
 </table>
 
 Keras Biases: 
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #006400"> -0.026355</td>
     <td style="background-color: #006400"> -0.026123</td>
@@ -141,7 +145,7 @@ Keras Biases:
 </table>
 
 CUDNN Weights:
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #CD5C5C">  0.727459</td>
     <td style="background-color: #CD5C5C">  0.072253</td>
@@ -253,7 +257,7 @@ Keras Kernel Weights:
 #FFD700 = gold
 #00008B = darkblue --->
 
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #90EE90">  0.307402</td>
     <td style="background-color: #90EE90"> -0.468454</td>
@@ -277,7 +281,7 @@ Keras Kernel Weights:
     <td style="background-color: #FFFFE0">  0.564949</td>
   </tr>
 </table>
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #ADD8E6"> -0.202529</td>
     <td style="background-color: #ADD8E6">  0.328128</td>
@@ -292,7 +296,7 @@ Keras Kernel Weights:
 
 
 Keras Recurrent Weights: 
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #008000"> -0.338174</td>
     <td style="background-color: #008000"> -0.019739</td>
@@ -327,7 +331,7 @@ Keras Recurrent Weights:
     <td style="background-color: #FFFF00"> -0.216613</td>
   </tr>
 </table>
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #0000FF">  0.106563</td>
     <td style="background-color: #0000FF">  0.249839</td>
@@ -347,7 +351,7 @@ Keras Recurrent Weights:
 
 
 Keras Biases: 
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #006400">  0.049217</td>
     <td style="background-color: #006400">  0.048934</td>
@@ -360,7 +364,7 @@ Keras Biases:
     <td style="background-color: #FFD700"> -0.007113</td>
   </tr>
 </table>
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #00008B"> -0.013948</td>
     <td style="background-color: #00008B"> -0.023413</td>
@@ -382,7 +386,7 @@ Keras Biases:
 #00008B = darkblue --->
 
 CUDNN Weights:
-<table border=0px style="font-size:13px;">
+<table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #90EE90">  0.307402</td>
     <td style="background-color: #90EE90"> -0.309438</td>
