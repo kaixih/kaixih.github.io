@@ -48,13 +48,13 @@ b<sub>R<sub>h</sub></sub>). These two sets of weights/biases pairs indicate that
 we apply bias addition whether the weight-input multiplication is for the layer
 input x<sub>t</sub> or for the recurrent input h<sub>t-1</sub>. In fact, the
 above equations represent a "double bias" mode categorized by CUDNN and
-apparently there are two other bias mode that apply bias addition only to layer
+apparently there are two other bias modes that apply bias addition only to layer
 input or only to recurrent input.
 
-Here I would like to point out the x<sub>t</sub> and h<sub>t-1</sub> are column
+Here I would like to point out the x<sub>t</sub> and h<sub>t-1</sub> are both column
 vectors in the shape of (inputSize, 1) and (hiddenSize, 1) respectively to make
 the matrix-vector multiplication possible. Therefore, the shape of each W
-weights is (hiddenSize, inputSize) and of each R weights is (hiddenSize,
+weights is (hiddenSize, inputSize) and the shape of each R weights is (hiddenSize,
 hiddenSize), while the biases are always in (hiddenSize, 1).
 
 The above discussion is based on CUDNN formula; by constrast, Keras takes a
@@ -62,13 +62,14 @@ slightly different way to interpret the weight-input multiplication, which is
 more like x<sub>t</sub><sup>T</sup>W<sup>T</sup> or
 h<sub>t-1</sub><sup>T</sup>R<sup>T</sup>. That way, the weights in Keras are
 stored in a transposed style compared to CUDNN: the W weights are (inputSize,
-hiddenSize) and the R weights are (hiddenSize, hiddenSize). Besides, CUDNN stores all
-weights and biases all together as a single flatten array, while Keras uses three arrays:
-1. kernel weights: a (inputSize, 3xhiddenSize) matrix containing the
+hiddenSize) and the R weights are (hiddenSize, hiddenSize). As for the specific
+implementation under the hood, CUDNN stores all weights and biases all together
+as a single flatten array, while Keras uses three arrays:
+1. kernel weights: a (inputSize, 3 x hiddenSize) matrix containing the
    concatenated three W weights.
-2. recurrent weights: a (hiddenSize, 3xhiddenSize) matrix containing the
+2. recurrent weights: a (hiddenSize, 3 x hiddenSize) matrix containing the
    concatenated three R weights.
-3. biases: a (2, 3xhiddenSize) matrix where one row is the concatenated W biases
+3. biases: a (2, 3 x hiddenSize) matrix where one row is the concatenated W biases
    and another is for R biases.
 
 The following python code is to output the parameters stored in Keras GRU layer:
@@ -102,9 +103,9 @@ print("Keras Biases:", gru.get_weights()[2])
 ```
 Here I don't copy/paste the outputs but visualize them with three colors to
 represent different types of weights/biases:
-1. green for _r_ weights/biases
-2. red for _i_ weights/biases
-3. yellow for _h_ weights/biases
+* green for _r_ weights/biases
+* red for _i_ weights/biases
+* yellow for _h_ weights/biases
 
 Keras Kernel Weights: 
 <!---
@@ -206,7 +207,7 @@ Keras Biases:
 </table>
 
 Moreover, I add some printfs in the backend to trace the inputs/outputs of CUDNN
-calls. The parameters directly taken by CUDNN are as below and I also tint them
+calls. The parameters directly taken in by CUDNN are as below and I also tint them
 with the three colors.
 
 CUDNN Parameters (Weights and Biases):
@@ -300,7 +301,7 @@ differences:
 So, if one is given some weights/biases extracted from Keras and their task is
 to use them in CUDNN, they have to perform a series of preprocessing on them,
 such as slicing, permuting, tranposing, concatenation, etc. Fortunately, we can
-find a "secret" tool from Tensorflow Keras that can help partially of the
+find a "secret" tool from Tensorflow Keras that can partially help over the
 preprocessing:
 ```python
 params = recurrent_v2._canonical_to_params(
