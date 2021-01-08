@@ -264,9 +264,6 @@ Keras Kernel Weights:
     <td style="background-color: #FFFFE0"> -0.119232</td>
     <td style="background-color: #FFFFE0">  0.018690</td>
     <td style="background-color: #FFFFE0"> -0.560165</td>
-    <td style="background-color: #ADD8E6"> -0.202529</td>
-    <td style="background-color: #ADD8E6">  0.328128</td>
-    <td style="background-color: #ADD8E6"> -0.453909</td>
   </tr>
   <tr>
     <td style="background-color: #90EE90"> -0.309438</td>
@@ -278,6 +275,15 @@ Keras Kernel Weights:
     <td style="background-color: #FFFFE0"> -0.450064</td>
     <td style="background-color: #FFFFE0">  0.124535</td>
     <td style="background-color: #FFFFE0">  0.564949</td>
+  </tr>
+</table>
+<table border=0px style="font-size:13px;">
+  <tr>
+    <td style="background-color: #ADD8E6"> -0.202529</td>
+    <td style="background-color: #ADD8E6">  0.328128</td>
+    <td style="background-color: #ADD8E6"> -0.453909</td>
+  </tr>
+  <tr>
     <td style="background-color: #ADD8E6"> -0.374840</td>
     <td style="background-color: #ADD8E6">  0.154384</td>
     <td style="background-color: #ADD8E6"> -0.276332</td>
@@ -297,9 +303,6 @@ Keras Recurrent Weights:
     <td style="background-color: #FFFF00"> -0.122475</td>
     <td style="background-color: #FFFF00">  0.061238</td>
     <td style="background-color: #FFFF00">  0.148485</td>
-    <td style="background-color: #0000FF">  0.106563</td>
-    <td style="background-color: #0000FF">  0.249839</td>
-    <td style="background-color: #0000FF">  0.177616</td>
   </tr>
   <tr>
     <td style="background-color: #008000"> -0.202324</td>
@@ -311,9 +314,6 @@ Keras Recurrent Weights:
     <td style="background-color: #FFFF00">  0.151397</td>
     <td style="background-color: #FFFF00">  0.039010</td>
     <td style="background-color: #FFFF00">  0.493140</td>
-    <td style="background-color: #0000FF"> -0.168453</td>
-    <td style="background-color: #0000FF"> -0.028650</td>
-    <td style="background-color: #0000FF"> -0.623991</td>
   </tr>
   <tr>
     <td style="background-color: #008000"> -0.114759</td>
@@ -325,11 +325,26 @@ Keras Recurrent Weights:
     <td style="background-color: #FFFF00">  0.150091</td>
     <td style="background-color: #FFFF00">  0.639458</td>
     <td style="background-color: #FFFF00"> -0.216613</td>
+  </tr>
+</table>
+<table border=0px style="font-size:13px;">
+  <tr>
+    <td style="background-color: #0000FF">  0.106563</td>
+    <td style="background-color: #0000FF">  0.249839</td>
+    <td style="background-color: #0000FF">  0.177616</td>
+  </tr>
+  <tr>
+    <td style="background-color: #0000FF"> -0.168453</td>
+    <td style="background-color: #0000FF"> -0.028650</td>
+    <td style="background-color: #0000FF"> -0.623991</td>
+  </tr>
+  <tr>
     <td style="background-color: #0000FF">  0.321846</td>
     <td style="background-color: #0000FF"> -0.380653</td>
     <td style="background-color: #0000FF"> -0.086838</td>
   </tr>
 </table>
+
 
 Keras Biases: 
 <table border=0px style="font-size:13px;">
