@@ -40,7 +40,7 @@ And it also shows the configuration of GRU layer.
 This following shows under the hood what the CUDNN is receiving for the weights array and we can notice two things:
 
 Keras Kernel Weights: 
-<table border=0px style="font-size:16px;">
+<table border=0px style="font-size:14px;">
   <tr>
     <td style="background-color: green">  0.014929</td>
     <td style="background-color: green"> -0.083409</td>
@@ -69,7 +69,7 @@ Keras Kernel Weights:
 
 
 Keras Recurrent Weights: 
-<table border=0px style="font-size:16px;">
+<table border=0px style="font-size:14px;">
   <tr>
     <td style="background-color: #8FBC8F"> -0.176383</td>
     <td style="background-color: #8FBC8F"> -0.344644</td>
