@@ -191,15 +191,15 @@ CUDNN Weights:
     <td style="background-color: #008000"> -0.253974</td>
   </tr>
   <tr>
-    <td style="background-color: #FFFFE0">  0.278958</td>
-    <td style="background-color: #FFFFE0">  0.519950</td>
-    <td style="background-color: #FFFFE0"> -0.030054</td>
-    <td style="background-color: #FFFFE0">  0.004496</td>
-    <td style="background-color: #FFFFE0"> -0.085155</td>
-    <td style="background-color: #FFFFE0"> -0.501773</td>
-    <td style="background-color: #FFFFE0">  0.346469</td>
-    <td style="background-color: #FFFFE0"> -0.509539</td>
-    <td style="background-color: #FFFFE0"> -0.211831</td>
+    <td style="background-color: #FFFF00">  0.278958</td>
+    <td style="background-color: #FFFF00">  0.519950</td>
+    <td style="background-color: #FFFF00"> -0.030054</td>
+    <td style="background-color: #FFFF00">  0.004496</td>
+    <td style="background-color: #FFFF00"> -0.085155</td>
+    <td style="background-color: #FFFF00"> -0.501773</td>
+    <td style="background-color: #FFFF00">  0.346469</td>
+    <td style="background-color: #FFFF00"> -0.509539</td>
+    <td style="background-color: #FFFF00"> -0.211831</td>
   </tr>
   <tr>
     <td style="background-color: #8B0000">  0.027354</td>
@@ -441,17 +441,17 @@ CUDNN Weights:
     <td style="background-color: #FF0000"> -0.398269</td>
     <td style="background-color: #FF0000">  0.278202</td>
     <td style="background-color: #FF0000"> -0.207373</td>
-    <td style="background-color: #FFFFE0"> -0.122475</td>
-    <td style="background-color: #FFFFE0">  0.151397</td>
-    <td style="background-color: #FFFFE0">  0.150091</td>
+    <td style="background-color: #FFFF00"> -0.122475</td>
+    <td style="background-color: #FFFF00">  0.151397</td>
+    <td style="background-color: #FFFF00">  0.150091</td>
   </tr>
   <tr>
-    <td style="background-color: #FFFFE0">  0.061238</td>
-    <td style="background-color: #FFFFE0">  0.039010</td>
-    <td style="background-color: #FFFFE0">  0.639458</td>
-    <td style="background-color: #FFFFE0">  0.148485</td>
-    <td style="background-color: #FFFFE0">  0.493140</td>
-    <td style="background-color: #FFFFE0"> -0.216613</td>
+    <td style="background-color: #FFFF00">  0.061238</td>
+    <td style="background-color: #FFFF00">  0.039010</td>
+    <td style="background-color: #FFFF00">  0.639458</td>
+    <td style="background-color: #FFFF00">  0.148485</td>
+    <td style="background-color: #FFFF00">  0.493140</td>
+    <td style="background-color: #FFFF00"> -0.216613</td>
     <td style="background-color: #0000FF">  0.106563</td>
     <td style="background-color: #0000FF"> -0.168453</td>
     <td style="background-color: #0000FF">  0.321846</td>
@@ -498,90 +498,6 @@ CUDNN Weights:
 
 (1) the array for the cudnn is a flat array which consists of all kernels and biases.
 (2) The order is sill kernel wieights , recurrent weights and biases, However, biases are single one not double -> zeros padding.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ## Reference
