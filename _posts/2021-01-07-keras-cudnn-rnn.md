@@ -17,8 +17,8 @@ are simple to use and productive, because it can handle the
 parameter creation, initialization, and other preprocessing before calling the
 actual libraries, where Tensorflow Keras adopts CUDNN as the backend for GPUs. 
 In comparison, there are demands that people would like to use CUDNN directly in
-their project for more efficiency and better control of the data flow. This
-might need porting the Keras code or simply viewing it as reference. However,
+their projects for more efficiency and better control of the data flow. This
+might need porting the Keras code or simply viewing its outputs as reference. However,
 Keras and CUDNN takes different means to deal with the parameters, leading to
 the different layouts of parameters. This often causes a bit of confusion
 when developers work on both APIs.
@@ -27,7 +27,7 @@ when developers work on both APIs.
 This post will check the GRU and LSTM layers from Keras, especially focusing on
 how the parameters are organized in Keras and what transformations are needed to
 make the parameters compatible for CUDNN. This post assumes people have
-sufficient background of RNN and the equations used are borrowed from the NVIDIA
+sufficient background of RNN. The equations used below are borrowed from the NVIDIA
 CUDNN documentation.
 
 ## GRU
@@ -39,16 +39,39 @@ r<sub>t</sub> = σ(W<sub>r</sub>x<sub>t</sub> + R<sub>r</sub>h<sub>t-1</sub> + b
 h'<sub>t</sub> = tanh(W<sub>h</sub>x<sub>t</sub> + r<sub>t</sub>◦(R<sub>h</sub>h<sub>t-1</sub> + b<sub>R<sub>h</sub></sub>) + b<sub>W<sub>h</sub></sub>) |
 h<sub>t</sub> = (1 - i<sub>t</sub>) ◦ h'<sub>t</sub> + i<sub>t</sub> ◦ h<sub>t-1</sub> |
 
-In these equations, σ is the sigmoid operator and ◦ is pointwise multiplication. There are three kernel weights (Wi, Wr and Wh) and three recurrent weights (Ri, Rr, and Rh). For each multiplication, we have biases (...). Suppose the input xt is a vector with inputSize elements (it is actually a transposed vector or a inputSize x 1 matrix to make the equation reasonable) and ht is a vector with hiddenSize elements (should be a transposed vector that same with the xt). So, the W weights are in
-the shape of (hiddenSize, inputSize) and R weights are of (hiddenSize, hiddenSize). Biases are always in (hiddenSize, 1). Note, this formula represents a double bias senario, meaning for each weights by input multiplication, we will apply a bias addition. There are other types of computation of only applying bias on R or W.
+In these equations, the parameters consisit of three kernel weights/biases
+(W<sub>i</sub>, W<sub>r</sub>, W<sub>h</sub>, b<sub>W<sub>i</sub></sub>,
+b<sub>W<sub>r</sub></sub>, b<sub>W<sub>h</sub></sub>) and three recurrent
+weights/biases (R<sub>i</sub>, R<sub>r</sub>, R<sub>h</sub>,
+b<sub>R<sub>i</sub></sub>, b<sub>R<sub>r</sub></sub>,
+b<sub>R<sub>h</sub></sub>). These two sets of weights/biases pairs indicate that
+we apply bias addition whether the weight-input multiplication is for the layer
+input x<sub>t</sub> or for the recurrent input h<sub>t-1</sub>. In fact, the
+above equations represent a "double bias" mode categorized by CUDNN and
+apparently there are two other bias mode that apply bias addition only to layer
+input or only to recurrent input.
 
-The above explanation is based on CUDNN implementation which directly determined the parameters (all weights and biases) are laided out. Whereas, in Keras, the matrix vector computation is like xtTWT, meaning the W and R kenrels are stored in a tranposed style compared to CUDNN, this causes main confusion when porting the Keras code to CUDNN.
+Here I would like to point out the x<sub>t</sub> and h<sub>t-1</sub> are column
+vectors in the shape of (inputSize, 1) and (hiddenSize, 1) respectively to make
+the matrix-vector multiplication possible. Therefore, the shape of each W
+weights is (hiddenSize, inputSize) and of each R weights is (hiddenSize,
+hiddenSize), while the biases are always in (hiddenSize, 1).
 
-Let's focus on the Keras GRU layer for now, the kernel/recurrent weights will be concatenated and laid out as (inputSize, 3xhiddenSize) while the recurent will be (hiddenSize, 3xhiddenSize).
-Suppose we have And it also shows the configuration of GRU layer.
-hiddenSize  = 3
-inputSize  = 2
-For example, the following code is used to get the weights and bias stored in Keras:
+The above discussion is based on CUDNN formula; by constrast, Keras takes a
+slightly different way to interpret the weight-input multiplication, which is
+more like x<sub>t</sub><sup>T</sup>W<sup>T</sup> or
+h<sub>t-1</sub><sup>T</sup>R<sup>T</sup>. That way, the weights in Keras are
+stored in a transposed style compared to CUDNN: the W weights are (inputSize,
+hiddenSize) and the R weights are (hiddenSize, hiddenSize). Besides, CUDNN stores all
+weights and biases all together as a single flatten array, while Keras uses three arrays:
+1. kernel weights: a (inputSize, 3xhiddenSize) matrix containing the
+   concatenated three W weights.
+2. recurrent weights: a (hiddenSize, 3xhiddenSize) matrix containing the
+   concatenated three R weights.
+3. biases: a (2, 3xhiddenSize) matrix where one row is the concatenated W biases
+   and another is for R biases.
+
+The following python code is to output the parameters stored in Keras GRU layer:
 ```python
 import tensorflow as tf
 import numpy as np
@@ -77,8 +100,11 @@ print("Keras Recurrent Weights:", gru.get_weights()[1])
 print("Keras Biases:", gru.get_weights()[2])
 
 ```
-
-This following shows under the hood what the CUDNN is receiving for the weights array and we are visualize the results in different colors (Wi in green, Wr in green, Wh in yellow). can notice two things:
+Here I don't copy/paste the outputs but visualize them with three colors to
+represent different types of weights/biases:
+1. green for _r_ weights/biases
+2. red for _i_ weights/biases
+3. yellow for _h_ weights/biases
 
 Keras Kernel Weights: 
 <!---
@@ -115,7 +141,6 @@ Keras Kernel Weights:
     <td style="background-color: #FFFFE0">  0.552166</td>
   </tr>
 </table>
-
 
 Keras Recurrent Weights: 
 <table border=0px style="font-size:12px;">
@@ -180,8 +205,11 @@ Keras Biases:
   </tr>
 </table>
 
-Also, we under the hood what the CUDNN is receiving for the weights array and we are visualize the results in same color compare to aboveand we can notice two things:
-CUDNN Weights:
+Moreover, I add some printfs in the backend to trace the inputs/outputs of CUDNN
+calls. The parameters directly taken by CUDNN are as below and I also tint them
+with the three colors.
+
+CUDNN Parameters (Weights and Biases):
 <table border=0px style="font-size:12px;">
   <tr>
     <td style="background-color: #CD5C5C">  0.727459</td>
@@ -263,12 +291,17 @@ CUDNN Weights:
 </table>
 
 
-(1) the array for the cudnn is a flat array which consists of all kernels and biases.
-(2) The general order is sill kernel wieights , recurrent weights and biases, However, the Wi and Wr's order is swapped, meaning the corresponding biases also need to swap.
+By comparing the parameters in Keras and CUDNN, we can observe three
+differences:
+1. CUDNN uses a single flat array, while Keras uses three separate arrays.
+2. The weights are transposed between CUDNN and Keras.
+3. The _i_ and _r_ weights/biases are swapped between CUDNN and Keras.
 
-So, if wanting to the weigths stored or extracted in Keras, we need to make some transformation (slicing, reordering, transpose, concatenation, etc) before useing cuDNN.
-Fortunatately, we can find a hiding tool from TF to do the convertion for us, but we still need to do some processing like the slicing, reorder to locate the different weights and biases.
-code:
+So, if one is given some weights/biases extracted from Keras and their task is
+to use them in CUDNN, they have to perform a series of preprocessing on them,
+such as slicing, permuting, tranposing, concatenation, etc. Fortunately, we can
+find a "secret" tool from Tensorflow Keras that can help partially of the
+preprocessing:
 ```python
 params = recurrent_v2._canonical_to_params(
     weights=[
@@ -289,8 +322,11 @@ params = recurrent_v2._canonical_to_params(
     ],
     shape=tf.constant([-1]),
     transpose_weights=True)
-print("CUDNN Params:", params)
+print("CUDNN-equivalent Params:", params)
 ```
+Note, as we can see, though it is a single function call, we still need to do
+most of the slicing operations and don't forget to swap the _i_ and _r_
+(i.e., the 0th and 1st) weights/biases. 
 
 
 ## LSTM
