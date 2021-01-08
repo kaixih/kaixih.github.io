@@ -32,17 +32,20 @@ i<sub>t</sub> = σ(W<sub>i</sub>x<sub>t</sub> + R<sub>i</sub>h<sub>t-1</sub> + b
 r<sub>t</sub> = σ(W<sub>r</sub>x<sub>t</sub> + R<sub>r</sub>h<sub>t-1</sub> + b<sub>W<sub>r</sub></sub> + b<sub>R<sub>r</sub></sub>) |
 h'<sub>t</sub> = tanh(W<sub>h</sub>x<sub>t</sub> + r<sub>t</sub>◦(R<sub>h</sub>h<sub>t-1</sub> + b<sub>R<sub>h</sub></sub>) + b<sub>W<sub>h</sub></sub>) |
 h<sub>t</sub> = (1 - i<sub>t</sub>) ◦ h'<sub>t</sub> + i<sub>t</sub> ◦ h<sub>t-1</sub> |
+In these equations, σ is the sigmoid operator and ◦ is pointwise multiplication. There are three kernel weights (Wi, Wr and Wh) and three recurrent weights (Ri, Rr, and Rh). For each multiplication, we have biases (...). Suppose the input xt is a vector with inputSize elements (it is actually a transposed vector or a inputSize x 1 matrix to make the equation reasonable) and ht is a vector with hiddenSize elements (should be a transposed vector that same with the xt). So, the W weights are in
+the shape of (hiddenSize, inputSize) and R weights are of (hiddenSize, hiddenSize). Biases are always in (hiddenSize, 1). Note, this formula represents a double bias senario, meaning for each weights by input multiplication, we will apply a bias addition. There are other types of computation of only applying bias on R or W.
 
+The above explanation is based on CUDNN implementation which directly determined the parameters (all weights and biases) are laided out. Whereas, in Keras, the matrix vector computation is like xtTWT, meaning the W and R kenrels are stored in a tranposed style compared to CUDNN, this causes main confusion when porting the Keras code to CUDNN.
+
+Let's focus on the Keras GRU layer for now, the kernel/recurrent weights will be concatenated and laid out as (inputSize, 3xhiddenSize) while the recurent will be (hiddenSize, 3xhiddenSize).
+Suppose we have And it also shows the configuration of GRU layer.
 hiddenSize  = 3
 inputSize  = 2
-This formula represents a double bias senario, meaning for each weights by input multiplication, we will apply a bias addition.
-We need 3 kernel weights Wi Wr Wh and 3 recurrent weights (Ri Rr Rh), also 3 biases for each.
-Wi should by inputSize by hiddenSize. Ri will be hiddenSize by hiddenSize. Bias will be same with hiddenSize.
-Suppose we have GRU layer in keras, the kernel/recurrent weights will be laid out as inputSize by 3(hiddenSize) while the recurent will be hiddenSize by 3(hiddenSize).
-For example, the following code is used to put out the weights and bias stored in Keras:
-And it also shows the configuration of GRU layer.
+For example, the following code is used to get the weights and bias stored in Keras:
+```python
+```
 
-This following shows under the hood what the CUDNN is receiving for the weights array and we can notice two things:
+This following shows under the hood what the CUDNN is receiving for the weights array and we are visualize the results in different colors (Wi in green, Wr in green, Wh in yellow). can notice two things:
 
 Keras Kernel Weights: 
 <!---
@@ -144,6 +147,7 @@ Keras Biases:
   </tr>
 </table>
 
+Also, we under the hood what the CUDNN is receiving for the weights array and we are visualize the results in same color compare to aboveand we can notice two things:
 CUDNN Weights:
 <table border=0px style="font-size:12px;">
   <tr>
@@ -229,7 +233,7 @@ CUDNN Weights:
 (1) the array for the cudnn is a flat array which consists of all kernels and biases.
 (2) The general order is sill kernel wieights , recurrent weights and biases, However, the Wi and Wr's order is swapped, meaning the corresponding biases also need to swap.
 
-So, if the weigths stored or extracted in Keras, we need to make some transformation (a bunch of slicing, concatenation, transpose, etc) before useing cuDNN.
+So, if wanting to the weigths stored or extracted in Keras, we need to make some transformation (slicing, reordering, transpose, concatenation, etc) before useing cuDNN.
 Fortunatately, we can find a hiding tool from TF to do the convertion for us, but we still need to do some processing like the slicing, reorder to locate the different weights and biases.
 code:
 
