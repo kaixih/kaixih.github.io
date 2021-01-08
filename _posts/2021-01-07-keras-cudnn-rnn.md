@@ -56,13 +56,15 @@ hidden_size = 3
 
 tf.random.set_seed(seed=1)
 x = tf.random.uniform((seq_len, batch_size, input_size))
-gru = layers.GRU(hidden_size, time_major=True, return_sequences=True,
+gru = layers.GRU(hidden_size, time_major=True,
+                 return_sequences=True,
                  kernel_initializer='glorot_uniform',
                  recurrent_initializer='orthogonal',
                  bias_initializer='random_uniform')
 y = gru(x)
 
-np.set_printoptions(formatter={'float': lambda x: "{0:0.6f}".format(x)})
+np.set_printoptions(
+    formatter={'float': lambda x: "{0:0.6f}".format(x)})
 
 print("Keras Kernel Weights:", gru.get_weights()[0])
 print("Keras Recurrent Weights:", gru.get_weights()[1])
@@ -297,7 +299,8 @@ c<sub>t</sub> = f<sub>t</sub> ◦ c<sub>t-1</sub> + i<sub>t</sub> ◦ c'<sub>t</
 h<sub>t</sub> = o<sub>t</sub> ◦ tanh(c<sub>t</sub>) |
 
 ```python
-lstm = layers.LSTM(hidden_size, time_major=True, return_sequences=True,
+lstm = layers.LSTM(hidden_size, time_major=True,
+                   return_sequences=True,
                    kernel_initializer='glorot_uniform',
                    recurrent_initializer='orthogonal',
                    bias_initializer='random_uniform')
@@ -562,7 +565,7 @@ CUDNN Weights:
 (2) The order is sill kernel wieights , recurrent weights and biases, However, biases are single one not double -> zeros padding.
 
 ```python
-params = recurrent_v2._canonical_to_params(    # pylint: disable=protected-access
+params = recurrent_v2._canonical_to_params(
     weights=[
         lstm.get_weights()[0][:, :hidden_size],
         lstm.get_weights()[0][:, hidden_size:hidden_size * 2],
