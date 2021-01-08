@@ -42,6 +42,20 @@ This following shows under the hood what the CUDNN is receiving for the weights 
 Keras Kernel Weights: 
 
 <p style="font-size:11px">
+<table>
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td><span style="background-color: green">January</span></td>
+    <td>$100</td>
+  </tr>
+  <tr>
+    <td>February</td>
+    <td>$80</td>
+  </tr>
+</table>
 
 |<span style="background-color: green"> 0.01492912 </span>|<span style="background-color: green">-0.08340913 </span>|<span style="background-color: green">-0.13510555 </span>|<span style="background-color: red">0.7274594   </span>|<span style="background-color: red">0.27867514 </span>|<span style="background-color: red">-0.22769517 </span>|<span style="background-color: yellow">-0.09443533 </span>|<span style="background-color: yellow">0.14927697 </span>|<span style="background-color: yellow">-0.06407022 </span>|
 |<span style="background-color: green"> 0.3732596  </span>|<span style="background-color: green">-0.46085864 </span>|<span style="background-color: green"> 0.0720188  </span>|<span style="background-color: red">0.07225263  </span>|<span style="background-color: red">0.0731563  </span>|<span style="background-color: red">-0.32511705 </span>|<span style="background-color: yellow">-0.5776096  </span>|<span style="background-color: yellow">0.19336885 </span>|<span style="background-color: yellow"> 0.5521658  </span>|
