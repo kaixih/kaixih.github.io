@@ -28,10 +28,10 @@ and LSTM. And will borrow the formula from NVIDIA CUDNN documentation for refere
 
 GRU formula |
 --- |
-it = σ(W<sub>i</sub>xt + R<sub>i</sub>ht-1 + bW<sub>i</sub> + bR<sub>i</sub>) |
-rt = σ(W<sub>r</sub>xt + R<sub>r</sub>ht-1 + bW<sub>r</sub> + bR<sub>r</sub>) |
-h't = tanh(W<sub>h</sub>xt + rt◦(R<sub>h</sub>ht-1 + bR<sub>h</sub>) + bW<sub>h</sub>) |
-ht = (1 - it) ◦ h't + it ◦ ht-1 |
+i<sub>t</sub> = σ(W<sub>i</sub>x<sub>t</sub> + R<sub>i</sub>h<sub>t-1</sub> + b<sub>W<sub>i</sub></sub> + b<sub>R<sub>i</sub></sub>) |
+r<sub>t</sub> = σ(W<sub>r</sub>x<sub>t</sub> + R<sub>r</sub>h<sub>t-1</sub> + b<sub>W<sub>r</sub></sub> + b<sub>R<sub>r</sub></sub>) |
+h'<sub>t</sub> = tanh(W<sub>h</sub>x<sub>t</sub> + r<sub>t</sub>◦(R<sub>h</sub>h<sub>t-1</sub> + b<sub>R<sub>h</sub></sub>) + b<sub>W<sub>h</sub></sub>) |
+h<sub>t</sub> = (1 - i<sub>t</sub>) ◦ h'<sub>t</sub> + i<sub>t</sub> ◦ h<sub>t-1</sub> |
 
 hiddenSize  = 3
 inputSize  = 2
