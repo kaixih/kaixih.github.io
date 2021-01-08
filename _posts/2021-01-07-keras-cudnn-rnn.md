@@ -41,11 +41,7 @@ This following shows under the hood what the CUDNN is receiving for the weights 
 
 Keras Kernel Weights: 
 
-<table border=0px, font-size=12px>
-  <tr>
-    <th>Month</th>
-    <th>Savings</th>
-  </tr>
+<table border=0px, style="font-size:12px;">
   <tr>
     <td style="background-color: green">January</td>
     <td style="background-color: green">January</td>
