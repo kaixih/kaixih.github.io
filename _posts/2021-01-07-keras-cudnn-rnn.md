@@ -44,6 +44,30 @@ hiddenSize  = 3
 inputSize  = 2
 For example, the following code is used to get the weights and bias stored in Keras:
 ```python
+import tensorflow as tf
+import numpy as np
+from tensorflow.keras import layers
+from tensorflow.python.keras.layers import recurrent_v2
+
+batch_size = 1
+seq_len = 2
+input_size = 2
+hidden_size = 3
+
+tf.random.set_seed(seed=1)
+x = tf.random.uniform((seq_len, batch_size, input_size))
+gru = layers.GRU(hidden_size, time_major=True, return_sequences=True,
+                 kernel_initializer='glorot_uniform',
+                 recurrent_initializer='orthogonal',
+                 bias_initializer='random_uniform')
+y = gru(x)
+
+np.set_printoptions(formatter={'float': lambda x: "{0:0.6f}".format(x)})
+
+print("Keras Kernel Weights:", gru.get_weights()[0])
+print("Keras Recurrent Weights:", gru.get_weights()[1])
+print("Keras Biases:", gru.get_weights()[2])
+
 ```
 
 This following shows under the hood what the CUDNN is receiving for the weights array and we are visualize the results in different colors (Wi in green, Wr in green, Wh in yellow). can notice two things:
@@ -237,6 +261,28 @@ CUDNN Weights:
 So, if wanting to the weigths stored or extracted in Keras, we need to make some transformation (slicing, reordering, transpose, concatenation, etc) before useing cuDNN.
 Fortunatately, we can find a hiding tool from TF to do the convertion for us, but we still need to do some processing like the slicing, reorder to locate the different weights and biases.
 code:
+```python
+params = recurrent_v2._canonical_to_params(
+    weights=[
+        gru.get_weights()[0][:, hidden_size:hidden_size * 2],
+        gru.get_weights()[0][:, :hidden_size],
+        gru.get_weights()[0][:, hidden_size * 2:],
+        gru.get_weights()[1][:, hidden_size:hidden_size * 2],
+        gru.get_weights()[1][:, :hidden_size],
+        gru.get_weights()[1][:, hidden_size * 2:],
+    ],
+    biases=[
+        gru.get_weights()[2][0][hidden_size:hidden_size * 2],
+        gru.get_weights()[2][0][:hidden_size],
+        gru.get_weights()[2][0][hidden_size * 2:hidden_size * 3],
+        gru.get_weights()[2][1][hidden_size:hidden_size * 2],
+        gru.get_weights()[2][1][:hidden_size],
+        gru.get_weights()[2][1][hidden_size * 2:hidden_size * 3],
+    ],
+    shape=tf.constant([-1]),
+    transpose_weights=True)
+print("CUDNN Params:", params)
+```
 
 
 ## LSTM
@@ -249,6 +295,17 @@ o<sub>t</sub> = σ(W<sub>o</sub>x<sub>t</sub> + R<sub>o</sub>h<sub>t-1</sub> + b
 c'<sub>t</sub> = tanh(W<sub>c</sub>x<sub>t</sub> + R<sub>c</sub>h<sub>t-1</sub> + b<sub>W<sub>c</sub></sub> + b<sub>R<sub>c</sub></sub>) |
 c<sub>t</sub> = f<sub>t</sub> ◦ c<sub>t-1</sub> + i<sub>t</sub> ◦ c'<sub>t</sub> |
 h<sub>t</sub> = o<sub>t</sub> ◦ tanh(c<sub>t</sub>) |
+
+```python
+lstm = layers.LSTM(hidden_size, time_major=True, return_sequences=True,
+                   kernel_initializer='glorot_uniform',
+                   recurrent_initializer='orthogonal',
+                   bias_initializer='random_uniform')
+y = lstm(x)
+print("Keras Kernel Weights:", lstm.get_weights()[0])
+print("Keras Recurrent Weights:", lstm.get_weights()[1])
+print("Keras Biases:", lstm.get_weights()[2])
+```
 
 Keras Kernel Weights: 
 <!---
@@ -503,6 +560,34 @@ CUDNN Weights:
 
 (1) the array for the cudnn is a flat array which consists of all kernels and biases.
 (2) The order is sill kernel wieights , recurrent weights and biases, However, biases are single one not double -> zeros padding.
+
+```python
+params = recurrent_v2._canonical_to_params(    # pylint: disable=protected-access
+    weights=[
+        lstm.get_weights()[0][:, :hidden_size],
+        lstm.get_weights()[0][:, hidden_size:hidden_size * 2],
+        lstm.get_weights()[0][:, hidden_size * 2:hidden_size * 3],
+        lstm.get_weights()[0][:, hidden_size * 3:],
+        lstm.get_weights()[1][:, :hidden_size],
+        lstm.get_weights()[1][:, hidden_size:hidden_size * 2],
+        lstm.get_weights()[1][:, hidden_size * 2:hidden_size * 3],
+        lstm.get_weights()[1][:, hidden_size * 3:],
+    ],
+    biases=[
+        tf.zeros((hidden_size,)),
+        tf.zeros((hidden_size,)),
+        tf.zeros((hidden_size,)),
+        tf.zeros((hidden_size,)),
+        lstm.get_weights()[2][:hidden_size],
+        lstm.get_weights()[2][hidden_size:hidden_size * 2],
+        lstm.get_weights()[2][hidden_size * 2:hidden_size * 3],
+        lstm.get_weights()[2][hidden_size * 3:hidden_size * 4],
+    ],
+    shape=tf.constant([-1]),
+    transpose_weights=True)
+print("CUDNN Params:", params)
+
+```
 
 
 ## Reference
