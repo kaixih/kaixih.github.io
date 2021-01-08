@@ -42,8 +42,8 @@ This following shows under the hood what the CUDNN is receiving for the weights 
 Keras Kernel Weights: 
 
 
-|<span style="background-color: green"> 0.01492912 </span>|-0.08340913 |-0.13510555  |0.7274594   |0.27867514 |-0.22769517 |-0.09443533  |0.14927697 |-0.06407022 |
-|<span style="background-color: green"> 0.3732596  </span>|-0.46085864 | 0.0720188   |0.07225263  |0.0731563  |-0.32511705 |-0.5776096   |0.19336885 | 0.5521658  |
+|<span style="background-color: green"> 0.01492912 </span>|<span style="background-color: green">-0.08340913 </span>|<span style="background-color: green">-0.13510555 </span>|<span style="background-color: red">0.7274594   </span>|<span style="background-color: red">0.27867514 </span>|<span style="background-color: red">-0.22769517 </span>|<span style="background-color: yellow">-0.09443533 </span>|<span style="background-color: yellow">0.14927697 </span>|<span style="background-color: yellow">-0.06407022 </span>|
+|<span style="background-color: green"> 0.3732596  </span>|<span style="background-color: green">-0.46085864 </span>|<span style="background-color: green"> 0.0720188  </span>|<span style="background-color: red">0.07225263  </span>|<span style="background-color: red">0.0731563  </span>|<span style="background-color: red">-0.32511705 </span>|<span style="background-color: yellow">-0.5776096  </span>|<span style="background-color: yellow">0.19336885 </span>|<span style="background-color: yellow"> 0.5521658  </span>|
 
 [[ 0.01492912 -0.08340913 -0.13510555  0.7274594   0.27867514 -0.22769517 -0.09443533  0.14927697 -0.06407022]
  [ 0.3732596  -0.46085864  0.0720188   0.07225263  0.0731563  -0.32511705 -0.5776096   0.19336885  0.5521658 ]]
@@ -56,13 +56,13 @@ Keras Biases:
  [ 0.03700757 -0.00075941 -0.00030701 -0.04698812  0.01857647  0.01315722 -0.02921613 -0.00608767 -0.03110452]]
 
 Weights:
-0.727459 0.072253 0.278675 0.073156 -0.227695 -0.325117 0.014929 0.373260 -0.083409 -0.460859
--0.135106 0.072019 -0.094435 -0.577610 0.149277 0.193369 -0.064070 0.552166 -0.260896 0.492178
--0.538845 -0.076115 0.236306 0.241279 -0.322728 0.117206 0.437976 -0.176383 -0.204532 0.308245
--0.344644 0.104082 0.050380 -0.688634 -0.313509 -0.253974 0.278958 0.519950 -0.030054 0.004496
--0.085155 -0.501773 0.346469 -0.509539 -0.211831 0.027354 0.011077 0.037218 -0.026355 -0.026123
-0.000363 -0.022715 0.011832 -0.029748 -0.046988 0.018576 0.013157 0.037008 -0.000759 -0.000307
--0.029216 -0.006088 -0.031105
+|<span style="background-color: red"> 0.727459 </span>|<span style="background-color: red"> 0.072253 </span>|<span style="background-color: red"> 0.278675 </span>|<span style="background-color: red"> 0.073156 </span>|<span style="background-color: red">-0.227695 </span>|<span style="background-color: red">-0.325117 </span>|<span style="background-color: green"> 0.014929 </span>|<span style="background-color: green"> 0.373260 </span>|<span style="background-color: green">-0.083409 </span>|<span style="background-color: green">-0.460859</span>|
+|<span style="background-color: green">-0.135106 </span>| <span style="background-color: green">0.072019 </span>|<span style="background-color: yellow">-0.094435 </span>|<span style="background-color: yellow">-0.577610 </span>|<span style="background-color: yellow"> 0.149277 </span>|<span style="background-color: yellow"> 0.193369 </span>|<span style="background-color: yellow">-0.064070 </span>|<span style="background-color: yellow"> 0.552166 </span>|-0.260896 | 0.492178|
+|-0.538845 |-0.076115 | 0.236306 | 0.241279 |-0.322728 | 0.117206 | 0.437976 |-0.176383 |-0.204532 | 0.308245|
+|-0.344644 | 0.104082 | 0.050380 |-0.688634 |-0.313509 |-0.253974 | 0.278958 | 0.519950 |-0.030054 | 0.004496|
+|-0.085155 |-0.501773 | 0.346469 |-0.509539 |-0.211831 | 0.027354 | 0.011077 | 0.037218 |-0.026355 |-0.026123|
+| 0.000363 |-0.022715 | 0.011832 |-0.029748 |-0.046988 | 0.018576 | 0.013157 | 0.037008 |-0.000759 |-0.000307|
+|-0.029216 |-0.006088 |-0.031105
 
 (1) the array for the cudnn is a flat array which consists of all kernels and biases.
 (2) The general order is sill kernel wieights , recurrent weights and biases, However, the Wi and Wr's order is swapped, meaning the corresponding biases also need to swap.
