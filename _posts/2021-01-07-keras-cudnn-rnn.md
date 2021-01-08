@@ -374,6 +374,8 @@ CUDNN Weights:
     <td style="background-color: #CD5C5C"> -0.406933</td>
     <td style="background-color: #CD5C5C"> -0.397582</td>
     <td style="background-color: #CD5C5C">  0.390397</td>
+  </tr>
+  <tr>
     <td style="background-color: #CD5C5C">  0.334114</td>
     <td style="background-color: #CD5C5C">  0.267421</td>
     <td style="background-color: #CD5C5C"> -0.077433</td>
@@ -383,6 +385,8 @@ CUDNN Weights:
     <td style="background-color: #FFFFE0">  0.124535</td>
     <td style="background-color: #FFFFE0"> -0.560165</td>
     <td style="background-color: #FFFFE0">  0.564949</td>
+  </tr>
+  <tr>
     <td style="background-color: #ADD8E6"> -0.202529</td>
     <td style="background-color: #ADD8E6"> -0.374840</td>
     <td style="background-color: #ADD8E6">  0.328128</td>
@@ -392,6 +396,8 @@ CUDNN Weights:
     <td style="background-color: #008000"> -0.338174</td>
     <td style="background-color: #008000"> -0.202324</td>
     <td style="background-color: #008000"> -0.114759</td>
+  </tr>
+  <tr>
     <td style="background-color: #008000"> -0.019739</td>
     <td style="background-color: #008000"> -0.259554</td>
     <td style="background-color: #008000"> -0.399628</td>
@@ -401,6 +407,8 @@ CUDNN Weights:
     <td style="background-color: #FF0000">  0.173684</td>
     <td style="background-color: #FF0000"> -0.176437</td>
     <td style="background-color: #FF0000">  0.166763</td>
+  </tr>
+  <tr>
     <td style="background-color: #FF0000"> -0.237763</td>
     <td style="background-color: #FF0000">  0.164398</td>
     <td style="background-color: #FF0000">  0.137982</td>
@@ -410,6 +418,8 @@ CUDNN Weights:
     <td style="background-color: #FFFFE0"> -0.122475</td>
     <td style="background-color: #FFFFE0">  0.151397</td>
     <td style="background-color: #FFFFE0">  0.150091</td>
+  </tr>
+  <tr>
     <td style="background-color: #FFFFE0">  0.061238</td>
     <td style="background-color: #FFFFE0">  0.039010</td>
     <td style="background-color: #FFFFE0">  0.639458</td>
@@ -419,6 +429,8 @@ CUDNN Weights:
     <td style="background-color: #0000FF">  0.106563</td>
     <td style="background-color: #0000FF"> -0.168453</td>
     <td style="background-color: #0000FF">  0.321846</td>
+  </tr>
+  <tr>
     <td style="background-color: #0000FF">  0.249839</td>
     <td style="background-color: #0000FF"> -0.028650</td>
     <td style="background-color: #0000FF"> -0.380653</td>
@@ -428,6 +440,8 @@ CUDNN Weights:
     <td style="background-color: #006400">  0.000000</td>
     <td style="background-color: #006400">  0.000000</td>
     <td style="background-color: #006400">  0.000000</td>
+  </tr>
+  <tr>
     <td style="background-color: #8B0000">  0.000000</td>
     <td style="background-color: #8B0000">  0.000000</td>
     <td style="background-color: #8B0000">  0.000000</td>
@@ -437,6 +451,8 @@ CUDNN Weights:
     <td style="background-color: #00008B">  0.000000</td>
     <td style="background-color: #00008B">  0.000000</td>
     <td style="background-color: #00008B">  0.000000</td>
+  </tr>
+  <tr>
     <td style="background-color: #006400">  0.049217</td>
     <td style="background-color: #006400">  0.048934</td>
     <td style="background-color: #006400">  0.007049</td>
@@ -446,6 +462,8 @@ CUDNN Weights:
     <td style="background-color: #FFD700"> -0.020231</td>
     <td style="background-color: #FFD700">  0.046288</td>
     <td style="background-color: #FFD700"> -0.007113</td>
+  </tr>
+  <tr>
     <td style="background-color: #00008B"> -0.013948</td>
     <td style="background-color: #00008B"> -0.023413</td>
     <td style="background-color: #00008B"> -0.001040</td>
