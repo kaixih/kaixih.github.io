@@ -40,28 +40,37 @@ And it also shows the configuration of GRU layer.
 This following shows under the hood what the CUDNN is receiving for the weights array and we can notice two things:
 
 Keras Kernel Weights: 
+# #90EE90 = lightgreen 
+# #CD5C5C = indianred
+# #FFFFE0 = lightyellow
+# #008000 = green
+# #FF0000 = red
+# #FFFF00 = yellow
+# #006400 = darkgreen
+# #8B0000 = darkred
+# #FFD700 = gold
 <table border=0px style="font-size:13px;">
   <tr>
-    <td style="background-color: green">  0.014929</td>
-    <td style="background-color: green"> -0.083409</td>
-    <td style="background-color: green"> -0.135106</td>
-    <td style="background-color: red">    0.727459</td>
-    <td style="background-color: red">    0.278675</td>
-    <td style="background-color: red">   -0.227695</td>
-    <td style="background-color: yellow">-0.094435</td>
-    <td style="background-color: yellow"> 0.149277</td>
-    <td style="background-color: yellow">-0.064070</td>
+    <td style="background-color: #90EE90">  0.014929</td>
+    <td style="background-color: #90EE90"> -0.083409</td>
+    <td style="background-color: #90EE90"> -0.135106</td>
+    <td style="background-color: #CD5C5C">  0.727459</td>
+    <td style="background-color: #CD5C5C">  0.278675</td>
+    <td style="background-color: #CD5C5C"> -0.227695</td>
+    <td style="background-color: #FFFFE0"> -0.094435</td>
+    <td style="background-color: #FFFFE0">  0.149277</td>
+    <td style="background-color: #FFFFE0"> -0.064070</td>
   </tr>
   <tr>
-    <td style="background-color: green">  0.373260</td>
-    <td style="background-color: green"> -0.460859</td>
-    <td style="background-color: green">  0.072019</td>
-    <td style="background-color: red">    0.072253</td>
-    <td style="background-color: red">    0.073156</td>
-    <td style="background-color: red">   -0.325117</td>
-    <td style="background-color: yellow">-0.577610</td>
-    <td style="background-color: yellow"> 0.193369</td>
-    <td style="background-color: yellow"> 0.552166</td>
+    <td style="background-color: #90EE90">  0.373260</td>
+    <td style="background-color: #90EE90"> -0.460859</td>
+    <td style="background-color: #90EE90">  0.072019</td>
+    <td style="background-color: #CD5C5C">    0.072253</td>
+    <td style="background-color: #CD5C5C">    0.073156</td>
+    <td style="background-color: #CD5C5C">   -0.325117</td>
+    <td style="background-color: #FFFFE0">-0.577610</td>
+    <td style="background-color: #FFFFE0"> 0.193369</td>
+    <td style="background-color: #FFFFE0"> 0.552166</td>
   </tr>
 </table>
 
@@ -69,37 +78,37 @@ Keras Kernel Weights:
 Keras Recurrent Weights: 
 <table border=0px style="font-size:13px;">
   <tr>
-    <td style="background-color: #8FBC8F"> -0.176383</td>
-    <td style="background-color: #8FBC8F"> -0.344644</td>
-    <td style="background-color: #8FBC8F"> -0.688634</td>
-    <td style="background-color: #CD5C5C"> -0.260896</td>
-    <td style="background-color: #CD5C5C"> -0.076115</td>
-    <td style="background-color: #CD5C5C"> -0.322728</td>
-    <td style="background-color: #FFFFE0">  0.278958</td>
-    <td style="background-color: #FFFFE0">  0.004496</td>
-    <td style="background-color: #FFFFE0">  0.346469</td>
+    <td style="background-color: #008000"> -0.176383</td>
+    <td style="background-color: #008000"> -0.344644</td>
+    <td style="background-color: #008000"> -0.688634</td>
+    <td style="background-color: #FF0000"> -0.260896</td>
+    <td style="background-color: #FF0000"> -0.076115</td>
+    <td style="background-color: #FF0000"> -0.322728</td>
+    <td style="background-color: #FFFF00">  0.278958</td>
+    <td style="background-color: #FFFF00">  0.004496</td>
+    <td style="background-color: #FFFF00">  0.346469</td>
   </tr>
   <tr>
-    <td style="background-color: #8FBC8F"> -0.204532</td>
-    <td style="background-color: #8FBC8F">  0.104082</td>
-    <td style="background-color: #8FBC8F"> -0.313509</td>
-    <td style="background-color: #CD5C5C">  0.492178</td>
-    <td style="background-color: #CD5C5C">  0.236306</td>
-    <td style="background-color: #CD5C5C">  0.117206</td>
-    <td style="background-color: #FFFFE0">  0.519950</td>
-    <td style="background-color: #FFFFE0"> -0.085155</td>
-    <td style="background-color: #FFFFE0"> -0.509539</td>
+    <td style="background-color: #008000"> -0.204532</td>
+    <td style="background-color: #008000">  0.104082</td>
+    <td style="background-color: #008000"> -0.313509</td>
+    <td style="background-color: #FF0000">  0.492178</td>
+    <td style="background-color: #FF0000">  0.236306</td>
+    <td style="background-color: #FF0000">  0.117206</td>
+    <td style="background-color: #FFFF00">  0.519950</td>
+    <td style="background-color: #FFFF00"> -0.085155</td>
+    <td style="background-color: #FFFF00"> -0.509539</td>
   </tr>
   <tr>
-    <td style="background-color: #8FBC8F">  0.308245</td>
-    <td style="background-color: #8FBC8F">  0.050380</td>
-    <td style="background-color: #8FBC8F"> -0.253974</td>
-    <td style="background-color: #CD5C5C"> -0.538845</td>
-    <td style="background-color: #CD5C5C">  0.241279</td>
-    <td style="background-color: #CD5C5C">  0.437976</td>
-    <td style="background-color: #FFFFE0"> -0.030054</td>
-    <td style="background-color: #FFFFE0"> -0.501773</td>
-    <td style="background-color: #FFFFE0"> -0.211831</td>
+    <td style="background-color: #008000">  0.308245</td>
+    <td style="background-color: #008000">  0.050380</td>
+    <td style="background-color: #008000"> -0.253974</td>
+    <td style="background-color: #FF0000"> -0.538845</td>
+    <td style="background-color: #FF0000">  0.241279</td>
+    <td style="background-color: #FF0000">  0.437976</td>
+    <td style="background-color: #FFFF00"> -0.030054</td>
+    <td style="background-color: #FFFF00"> -0.501773</td>
+    <td style="background-color: #FFFF00"> -0.211831</td>
   </tr>
 </table>
 
@@ -132,78 +141,78 @@ Keras Biases:
 CUDNN Weights:
 <table border=0px style="font-size:13px;">
   <tr>
-    <td style="background-color: red">    0.727459</td>
-    <td style="background-color: red">    0.072253</td>
-    <td style="background-color: red">    0.278675</td>
-    <td style="background-color: red">    0.073156</td>
-    <td style="background-color: red">   -0.227695</td>
-    <td style="background-color: red">   -0.325117</td>
-    <td style="background-color: green">  0.014929</td>
-    <td style="background-color: green">  0.373260</td>
-    <td style="background-color: green"> -0.083409</td>
-    <td style="background-color: green"> -0.460859</td>
+    <td style="background-color: #CD5C5C">  0.727459</td>
+    <td style="background-color: #CD5C5C">  0.072253</td>
+    <td style="background-color: #CD5C5C">  0.278675</td>
+    <td style="background-color: #CD5C5C">  0.073156</td>
+    <td style="background-color: #CD5C5C"> -0.227695</td>
+    <td style="background-color: #CD5C5C"> -0.325117</td>
+    <td style="background-color: #90EE90">  0.014929</td>
+    <td style="background-color: #90EE90">  0.373260</td>
+    <td style="background-color: #90EE90"> -0.083409</td>
   </tr>
   <tr>
-    <td style="background-color: green">   -0.135106</td>
-    <td style="background-color: green">    0.072019</td>
-    <td style="background-color: yellow">  -0.094435</td>
-    <td style="background-color: yellow">  -0.577610</td>
-    <td style="background-color: yellow">   0.149277</td>
-    <td style="background-color: yellow">   0.193369</td>
-    <td style="background-color: yellow">  -0.064070</td>
-    <td style="background-color: yellow">   0.552166</td>
-    <td style="background-color: #CD5C5C"> -0.260896</td>
-    <td style="background-color: #CD5C5C">  0.492178</td>
+    <td style="background-color: #90EE90"> -0.460859</td>
+    <td style="background-color: #90EE90">   -0.135106</td>
+    <td style="background-color: #90EE90">    0.072019</td>
+    <td style="background-color: #FFFFE0">  -0.094435</td>
+    <td style="background-color: #FFFFE0">  -0.577610</td>
+    <td style="background-color: #FFFFE0">   0.149277</td>
+    <td style="background-color: #FFFFE0">   0.193369</td>
+    <td style="background-color: #FFFFE0">  -0.064070</td>
+    <td style="background-color: #FFFFE0">   0.552166</td>
   </tr>
   <tr>
-    <td style="background-color: #CD5C5C"> -0.538845</td>
-    <td style="background-color: #CD5C5C"> -0.076115</td>
-    <td style="background-color: #CD5C5C">  0.236306</td>
-    <td style="background-color: #CD5C5C">  0.241279</td>
-    <td style="background-color: #CD5C5C"> -0.322728</td>
-    <td style="background-color: #CD5C5C">  0.117206</td>
-    <td style="background-color: #CD5C5C">  0.437976</td>
-    <td style="background-color: #8FBC8F"> -0.176383</td>
-    <td style="background-color: #8FBC8F"> -0.204532</td>
-    <td style="background-color: #8FBC8F">  0.308245</td>
+    <td style="background-color: #FF0000"> -0.260896</td>
+    <td style="background-color: #FF0000">  0.492178</td>
+    <td style="background-color: #FF0000"> -0.538845</td>
+    <td style="background-color: #FF0000"> -0.076115</td>
+    <td style="background-color: #FF0000">  0.236306</td>
+    <td style="background-color: #FF0000">  0.241279</td>
+    <td style="background-color: #FF0000"> -0.322728</td>
+    <td style="background-color: #FF0000">  0.117206</td>
+    <td style="background-color: #FF0000">  0.437976</td>
   </tr>
   <tr>
-    <td style="background-color: #8FBC8F"> -0.344644</td>
-    <td style="background-color: #8FBC8F">  0.104082</td>
-    <td style="background-color: #8FBC8F">  0.050380</td>
-    <td style="background-color: #8FBC8F"> -0.688634</td>
-    <td style="background-color: #8FBC8F"> -0.313509</td>
-    <td style="background-color: #8FBC8F"> -0.253974</td>
+    <td style="background-color: #008000"> -0.176383</td>
+    <td style="background-color: #008000"> -0.204532</td>
+    <td style="background-color: #008000">  0.308245</td>
+    <td style="background-color: #008000"> -0.344644</td>
+    <td style="background-color: #008000">  0.104082</td>
+    <td style="background-color: #008000">  0.050380</td>
+    <td style="background-color: #008000"> -0.688634</td>
+    <td style="background-color: #008000"> -0.313509</td>
+    <td style="background-color: #008000"> -0.253974</td>
+  </tr>
+  <tr>
     <td style="background-color: #FFFFE0">  0.278958</td>
     <td style="background-color: #FFFFE0">  0.519950</td>
     <td style="background-color: #FFFFE0"> -0.030054</td>
     <td style="background-color: #FFFFE0">  0.004496</td>
-  </tr>
-  <tr>
     <td style="background-color: #FFFFE0"> -0.085155</td>
     <td style="background-color: #FFFFE0"> -0.501773</td>
     <td style="background-color: #FFFFE0">  0.346469</td>
     <td style="background-color: #FFFFE0"> -0.509539</td>
     <td style="background-color: #FFFFE0"> -0.211831</td>
+  </tr>
+  <tr>
     <td style="background-color: #8B0000">  0.027354</td>
     <td style="background-color: #8B0000">  0.011077</td>
     <td style="background-color: #8B0000">  0.037218</td>
     <td style="background-color: #006400"> -0.026355</td>
     <td style="background-color: #006400"> -0.026123</td>
-  </tr>
-  <tr>
     <td style="background-color: #006400">  0.000363</td>
     <td style="background-color: #FFD700"> -0.022715</td>
     <td style="background-color: #FFD700">  0.011832</td>
     <td style="background-color: #FFD700"> -0.029748</td>
+  </tr>
+  <tr>
     <td style="background-color: #8B0000"> -0.046988</td>
     <td style="background-color: #8B0000">  0.018576</td>
     <td style="background-color: #8B0000">  0.013157</td>
     <td style="background-color: #006400">  0.037008</td>
     <td style="background-color: #006400"> -0.000759</td>
     <td style="background-color: #006400"> -0.000307</td>
-  </tr>
-  <tr>
     <td style="background-color: #FFD700"> -0.029216</td>
     <td style="background-color: #FFD700"> -0.006088</td>
     <td style="background-color: #FFD700"> -0.031105</td>
