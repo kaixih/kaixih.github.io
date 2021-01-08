@@ -9,20 +9,26 @@ comments: true
 ---
 (DRAFT)
 ## Introduction
-For RNN, people might want to port the code from keras to cudnn, or vice versa,
-or different use one of them as reference for their implementation. The keras RNN
-uses the cudnn as the backend, however, it isn't directly call it under the hood.
-They usually need to preprocess the inputs and then call the library, one facter
-is the layout of the weights and biases used in Keras and CUDNN is different,
-which might cause confusion for many develepers.
+Recurrent Neural Network (RNN) is widely used in AI applications of handwriting
+recognition, speech recognition, etc. It essentially consists of a series of
+matrix-vector multiplications and there are two popular gating mechanisms: GRU
+and LSTM. Tensorflow Keras provides high-level APIs for such operations, which
+are simple to use and productive, because it can handle the
+parameter creation, initialization, and other preprocessing before calling the
+actual libraries, where Tensorflow Keras adopts CUDNN as the backend for GPUs. 
+In comparison, there are demands that people would like to use CUDNN directly in
+their project for more efficiency and better control of the data flow. This
+might need porting the Keras code or simply viewing it as reference. However,
+Keras and CUDNN takes different means to deal with the parameters, leading to
+the different layouts of parameters. This often causes a bit of confusion
+when developers work on both APIs.
 
-This post will check the popular GRU and LSTM layer from Keras and CUDNN and discuss
-the some of the details of how the weights/biases are organized for them and how
-to transform your parameters from one API to another and the slight difference
-of the formula used in these two API.
 
-Note: this post assumes people has already understand the RNN structure of GRU
-and LSTM. And will borrow the formula from NVIDIA CUDNN documentation for reference.
+This post will check the GRU and LSTM layers from Keras, especially focusing on
+how the parameters are organized in Keras and what transformations are needed to
+make the parameters compatible for CUDNN. This post assumes people have
+sufficient background of RNN and the equations used are borrowed from the NVIDIA
+CUDNN documentation.
 
 ## GRU
 
@@ -297,6 +303,15 @@ o<sub>t</sub> = σ(W<sub>o</sub>x<sub>t</sub> + R<sub>o</sub>h<sub>t-1</sub> + b
 c'<sub>t</sub> = tanh(W<sub>c</sub>x<sub>t</sub> + R<sub>c</sub>h<sub>t-1</sub> + b<sub>W<sub>c</sub></sub> + b<sub>R<sub>c</sub></sub>) |
 c<sub>t</sub> = f<sub>t</sub> ◦ c<sub>t-1</sub> + i<sub>t</sub> ◦ c'<sub>t</sub> |
 h<sub>t</sub> = o<sub>t</sub> ◦ tanh(c<sub>t</sub>) |
+
+Similarly, σ is the sigmoid operator and ◦ is pointwise multiplication. But now we have four kernel weights (Wi, Wf and Wo, Wc) and four recurrent weights (Ri, Rr, and Rh). For each multiplication, we have biases (...). Suppose the input xt is a vector with inputSize elements (it is actually a transposed vector or a inputSize x 1 matrix to make the equation reasonable) and ht is a vector with hiddenSize elements (should be a transposed vector that same with the xt). So, the W weights are in
+the shape of (hiddenSize, inputSize) and R weights are of (hiddenSize, hiddenSize). Biases are always in (hiddenSize, 1). Note, this formula represents a double bias senario, meaning for each weights by input multiplication, we will apply a bias addition. There are other types of computation of only applying bias on R or W.
+
+The above explanation is based on CUDNN implementation which directly determined the parameters (all weights and biases) are laided out. Whereas, in Keras, the matrix vector computation is like xtTWT, meaning the W and R kenrels are stored in a tranposed style compared to CUDNN, this causes main confusion when porting the Keras code to CUDNN.
+
+Let's focus on the Keras GRU layer for now, the kernel/recurrent weights will be concatenated and laid out as (inputSize, 4xhiddenSize) while the recurent will be (hiddenSize, 4xhiddenSize).
+Suppose we have And it also shows the configuration of GRU layer.
+
 
 ```python
 lstm = layers.LSTM(hidden_size, time_major=True,
