@@ -56,6 +56,7 @@ Keras Biases:
  [ 0.03700757 -0.00075941 -0.00030701 -0.04698812  0.01857647  0.01315722 -0.02921613 -0.00608767 -0.03110452]]
 
 Weights:
+
 |<span style="background-color: red"> 0.727459 </span>|<span style="background-color: red"> 0.072253 </span>|<span style="background-color: red"> 0.278675 </span>|<span style="background-color: red"> 0.073156 </span>|<span style="background-color: red">-0.227695 </span>|<span style="background-color: red">-0.325117 </span>|<span style="background-color: green"> 0.014929 </span>|<span style="background-color: green"> 0.373260 </span>|<span style="background-color: green">-0.083409 </span>|<span style="background-color: green">-0.460859</span>|
 |<span style="background-color: green">-0.135106 </span>| <span style="background-color: green">0.072019 </span>|<span style="background-color: yellow">-0.094435 </span>|<span style="background-color: yellow">-0.577610 </span>|<span style="background-color: yellow"> 0.149277 </span>|<span style="background-color: yellow"> 0.193369 </span>|<span style="background-color: yellow">-0.064070 </span>|<span style="background-color: yellow"> 0.552166 </span>|-0.260896 | 0.492178|
 |-0.538845 |-0.076115 | 0.236306 | 0.241279 |-0.322728 | 0.117206 | 0.437976 |-0.176383 |-0.204532 | 0.308245|
