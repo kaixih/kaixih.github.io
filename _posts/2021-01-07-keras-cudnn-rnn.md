@@ -32,6 +32,7 @@ i<sub>t</sub> = σ(W<sub>i</sub>x<sub>t</sub> + R<sub>i</sub>h<sub>t-1</sub> + b
 r<sub>t</sub> = σ(W<sub>r</sub>x<sub>t</sub> + R<sub>r</sub>h<sub>t-1</sub> + b<sub>W<sub>r</sub></sub> + b<sub>R<sub>r</sub></sub>) |
 h'<sub>t</sub> = tanh(W<sub>h</sub>x<sub>t</sub> + r<sub>t</sub>◦(R<sub>h</sub>h<sub>t-1</sub> + b<sub>R<sub>h</sub></sub>) + b<sub>W<sub>h</sub></sub>) |
 h<sub>t</sub> = (1 - i<sub>t</sub>) ◦ h'<sub>t</sub> + i<sub>t</sub> ◦ h<sub>t-1</sub> |
+
 In these equations, σ is the sigmoid operator and ◦ is pointwise multiplication. There are three kernel weights (Wi, Wr and Wh) and three recurrent weights (Ri, Rr, and Rh). For each multiplication, we have biases (...). Suppose the input xt is a vector with inputSize elements (it is actually a transposed vector or a inputSize x 1 matrix to make the equation reasonable) and ht is a vector with hiddenSize elements (should be a transposed vector that same with the xt). So, the W weights are in
 the shape of (hiddenSize, inputSize) and R weights are of (hiddenSize, hiddenSize). Biases are always in (hiddenSize, 1). Note, this formula represents a double bias senario, meaning for each weights by input multiplication, we will apply a bias addition. There are other types of computation of only applying bias on R or W.
 
