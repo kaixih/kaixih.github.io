@@ -40,7 +40,7 @@ And it also shows the configuration of GRU layer.
 This following shows under the hood what the CUDNN is receiving for the weights array and we can notice two things:
 
 Keras Kernel Weights: 
-<table border=0px style="font-size:14px;">
+<table border=0px style="font-size:13px;">
   <tr>
     <td style="background-color: green">  0.014929</td>
     <td style="background-color: green"> -0.083409</td>
@@ -66,10 +66,8 @@ Keras Kernel Weights:
 </table>
 
 
-
-
 Keras Recurrent Weights: 
-<table border=0px style="font-size:14px;">
+<table border=0px style="font-size:13px;">
   <tr>
     <td style="background-color: #8FBC8F"> -0.176383</td>
     <td style="background-color: #8FBC8F"> -0.344644</td>
@@ -105,51 +103,113 @@ Keras Recurrent Weights:
   </tr>
 </table>
 
-
-
-
-
-
-
-
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-
-
-
-
-
-
-
-
-
-
-|<span style="background-color: #8FBC8F">-0.1763835  </span>|<span style="background-color: #8FBC8F">-0.34464398 </span>|<span style="background-color: #8FBC8F">-0.68863446 </span>|<span style="background-color: #CD5C5C">-0.26089588 </span>|<span style="background-color: #CD5C5C">-0.07611549 </span>|<span style="background-color: #CD5C5C">-0.3227275 </span>|<span style="background-color: #FFFFE0">0.27895766 </span>|<span style="background-color: #FFFFE0"> 0.00449633 </span>|<span style="background-color: #FFFFE0"> 0.34646943</span>|
-|<span style="background-color: #8FBC8F">-0.20453213 </span>|<span style="background-color: #8FBC8F"> 0.10408226 </span>|<span style="background-color: #8FBC8F">-0.31350893 </span>|<span style="background-color: #CD5C5C"> 0.49217793 </span>|<span style="background-color: #CD5C5C"> 0.2363063  </span>|<span style="background-color: #CD5C5C"> 0.1172057 </span>|<span style="background-color: #FFFFE0">0.5199497  </span>|<span style="background-color: #FFFFE0">-0.08515472 </span>|<span style="background-color: #FFFFE0">-0.50953877</span>|
-|<span style="background-color: #8FBC8F"> 0.30824518 </span>|<span style="background-color: #8FBC8F"> 0.0503802  </span>|<span style="background-color: #8FBC8F">-0.25397384 </span>|<span style="background-color: #CD5C5C">-0.538845   </span>|<span style="background-color: #CD5C5C"> 0.24127854 </span>|<span style="background-color: #CD5C5C"> 0.4379759 </span>|<span style="background-color: #FFFFE0">-0.03005415</span>|<span style="background-color: #FFFFE0">-0.50177294 </span>|<span style="background-color: #FFFFE0">-0.2118314 </span>|
-
 Keras Biases: 
-[[-0.02635479 -0.02612267  0.00036312  0.02735401  0.01107747  0.03721783 -0.02271527  0.01183162 -0.02974842]
- [ 0.03700757 -0.00075941 -0.00030701 -0.04698812  0.01857647  0.01315722 -0.02921613 -0.00608767 -0.03110452]]
+<table border=0px style="font-size:13px;">
+  <tr>
+    <td style="background-color: #006400"> -0.026355</td>
+    <td style="background-color: #006400"> -0.026123</td>
+    <td style="background-color: #006400">  0.000363</td>
+    <td style="background-color: #8B0000">  0.027354</td>
+    <td style="background-color: #8B0000">  0.011077</td>
+    <td style="background-color: #8B0000">  0.037218</td>
+    <td style="background-color: #FFD700"> -0.022715</td>
+    <td style="background-color: #FFD700">  0.011832</td>
+    <td style="background-color: #FFD700"> -0.029748</td>
+  </tr>
+  <tr>
+    <td style="background-color: #006400">  0.037008</td>
+    <td style="background-color: #006400"> -0.000759</td>
+    <td style="background-color: #006400"> -0.000307</td>
+    <td style="background-color: #8B0000"> -0.046988</td>
+    <td style="background-color: #8B0000">  0.018576</td>
+    <td style="background-color: #8B0000">  0.013157</td>
+    <td style="background-color: #FFD700"> -0.029216</td>
+    <td style="background-color: #FFD700"> -0.006088</td>
+    <td style="background-color: #FFD700"> -0.031105</td>
+  </tr>
+</table>
 
-Weights:
+CUDNN Weights:
+<table border=0px style="font-size:13px;">
+  <tr>
+    <td style="background-color: red">    0.727459</td>
+    <td style="background-color: red">    0.072253</td>
+    <td style="background-color: red">    0.278675</td>
+    <td style="background-color: red">    0.073156</td>
+    <td style="background-color: red">   -0.227695</td>
+    <td style="background-color: red">   -0.325117</td>
+    <td style="background-color: green">  0.014929</td>
+    <td style="background-color: green">  0.373260</td>
+    <td style="background-color: green"> -0.083409</td>
+    <td style="background-color: green"> -0.460859</td>
+  </tr>
+  <tr>
+    <td style="background-color: green">   -0.135106</td>
+    <td style="background-color: green">    0.072019</td>
+    <td style="background-color: yellow">  -0.094435</td>
+    <td style="background-color: yellow">  -0.577610</td>
+    <td style="background-color: yellow">   0.149277</td>
+    <td style="background-color: yellow">   0.193369</td>
+    <td style="background-color: yellow">  -0.064070</td>
+    <td style="background-color: yellow">   0.552166</td>
+    <td style="background-color: #CD5C5C"> -0.260896</td>
+    <td style="background-color: #CD5C5C">  0.492178</td>
+  </tr>
+  <tr>
+    <td style="background-color: #CD5C5C"> -0.538845</td>
+    <td style="background-color: #CD5C5C"> -0.076115</td>
+    <td style="background-color: #CD5C5C">  0.236306</td>
+    <td style="background-color: #CD5C5C">  0.241279</td>
+    <td style="background-color: #CD5C5C"> -0.322728</td>
+    <td style="background-color: #CD5C5C">  0.117206</td>
+    <td style="background-color: #CD5C5C">  0.437976</td>
+    <td style="background-color: #8FBC8F"> -0.176383</td>
+    <td style="background-color: #8FBC8F"> -0.204532</td>
+    <td style="background-color: #8FBC8F">  0.308245</td>
+  </tr>
+  <tr>
+    <td style="background-color: #8FBC8F"> -0.344644</td>
+    <td style="background-color: #8FBC8F">  0.104082</td>
+    <td style="background-color: #8FBC8F">  0.050380</td>
+    <td style="background-color: #8FBC8F"> -0.688634</td>
+    <td style="background-color: #8FBC8F"> -0.313509</td>
+    <td style="background-color: #8FBC8F"> -0.253974</td>
+    <td style="background-color: #FFFFE0">  0.278958</td>
+    <td style="background-color: #FFFFE0">  0.519950</td>
+    <td style="background-color: #FFFFE0"> -0.030054</td>
+    <td style="background-color: #FFFFE0">  0.004496</td>
+  </tr>
+  <tr>
+    <td style="background-color: #FFFFE0"> -0.085155</td>
+    <td style="background-color: #FFFFE0"> -0.501773</td>
+    <td style="background-color: #FFFFE0">  0.346469</td>
+    <td style="background-color: #FFFFE0"> -0.509539</td>
+    <td style="background-color: #FFFFE0"> -0.211831</td>
+    <td style="background-color: #8B0000">  0.027354</td>
+    <td style="background-color: #8B0000">  0.011077</td>
+    <td style="background-color: #8B0000">  0.037218</td>
+    <td style="background-color: #006400"> -0.026355</td>
+    <td style="background-color: #006400"> -0.026123</td>
+  </tr>
+  <tr>
+    <td style="background-color: #006400">  0.000363</td>
+    <td style="background-color: #FFD700"> -0.022715</td>
+    <td style="background-color: #FFD700">  0.011832</td>
+    <td style="background-color: #FFD700"> -0.029748</td>
+    <td style="background-color: #8B0000"> -0.046988</td>
+    <td style="background-color: #8B0000">  0.018576</td>
+    <td style="background-color: #8B0000">  0.013157</td>
+    <td style="background-color: #006400">  0.037008</td>
+    <td style="background-color: #006400"> -0.000759</td>
+    <td style="background-color: #006400"> -0.000307</td>
+  </tr>
+  <tr>
+    <td style="background-color: #FFD700"> -0.029216</td>
+    <td style="background-color: #FFD700"> -0.006088</td>
+    <td style="background-color: #FFD700"> -0.031105</td>
+  </tr>
+</table>
 
-|<span style="background-color: red"> 0.727459 </span>|<span style="background-color: red"> 0.072253 </span>|<span style="background-color: red"> 0.278675 </span>|<span style="background-color: red"> 0.073156 </span>|<span style="background-color: red">-0.227695 </span>|<span style="background-color: red">-0.325117 </span>|<span style="background-color: green"> 0.014929 </span>|<span style="background-color: green"> 0.373260 </span>|<span style="background-color: green">-0.083409 </span>|<span style="background-color: green">-0.460859</span>|
-|<span style="background-color: green">-0.135106 </span>| <span style="background-color: green">0.072019 </span>|<span style="background-color: yellow">-0.094435 </span>|<span style="background-color: yellow">-0.577610 </span>|<span style="background-color: yellow"> 0.149277 </span>|<span style="background-color: yellow"> 0.193369 </span>|<span style="background-color: yellow">-0.064070 </span>|<span style="background-color: yellow"> 0.552166 </span>|<span style="background-color: #CD5C5C">-0.260896 </span>|<span style="background-color: #CD5C5C"> 0.492178</span>|
-|<span style="background-color: #CD5C5C">-0.538845 </span>|<span style="background-color: #CD5C5C">-0.076115 </span>|<span style="background-color: #CD5C5C"> 0.236306 </span>|<span style="background-color: #CD5C5C"> 0.241279 </span>|<span style="background-color: #CD5C5C">-0.322728 </span>|<span style="background-color: #CD5C5C"> 0.117206   </span>|<span style="background-color: #CD5C5C"> 0.437976 </span>|<span style="background-color: #8FBC8F">-0.176383 </span>|<span style="background-color: #8FBC8F">-0.204532 </span>|<span style="background-color: #8FBC8F"> 0.308245</span>|
-|<span style="background-color: #8FBC8F">-0.344644 </span>|<span style="background-color: #8FBC8F"> 0.104082 </span>|<span style="background-color: #8FBC8F"> 0.050380 </span>|<span style="background-color: #8FBC8F">-0.688634 </span>|<span style="background-color: #8FBC8F">-0.313509 </span>| <span style="background-color: #8FBC8F">-0.253974 </span>|<span style="background-color: #FFFFE0"> 0.278958 </span>|<span style="background-color: #FFFFE0"> 0.519950 </span>|<span style="background-color: #FFFFE0">-0.030054 </span>|<span style="background-color: #FFFFE0"> 0.004496</span>|
-|<span style="background-color: #FFFFE0">-0.085155 </span>|<span style="background-color: #FFFFE0">-0.501773 </span>|<span style="background-color: #FFFFE0"> 0.346469 </span>|<span style="background-color: #FFFFE0">-0.509539 </span>|<span style="background-color: #FFFFE0">-0.211831 </span>| <span style="background-color: "> 0.027354 </span>|<span style="background-color: "> 0.011077 </span>|<span style="background-color: "> 0.037218 </span>|<span style="background-color: ">-0.026355 </span>|<span style="background-color: ">-0.026123</span>|
-|<span style="background-color: "> 0.000363 </span>|<span style="background-color: ">-0.022715 </span>|<span style="background-color: "> 0.011832 </span>|<span style="background-color: ">-0.029748 </span>|<span style="background-color: ">-0.046988 </span>| <span style="background-color: "> 0.018576 </span>|<span style="background-color: "> 0.013157 </span>|<span style="background-color: "> 0.037008 </span>|<span style="background-color: ">-0.000759 </span>|<span style="background-color: ">-0.000307</span>|
-|<span style="background-color: ">-0.029216 </span>|<span style="background-color: ">-0.006088 </span>|<span style="background-color: ">-0.031105 </span>|
 
 (1) the array for the cudnn is a flat array which consists of all kernels and biases.
 (2) The general order is sill kernel wieights , recurrent weights and biases, However, the Wi and Wr's order is swapped, meaning the corresponding biases also need to swap.
