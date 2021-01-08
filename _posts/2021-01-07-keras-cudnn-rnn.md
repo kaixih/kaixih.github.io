@@ -40,6 +40,7 @@ And it also shows the configuration of GRU layer.
 This following shows under the hood what the CUDNN is receiving for the weights array and we can notice two things:
 
 Keras Kernel Weights: 
+<!---
 #90EE90 = lightgreen 
 #CD5C5C = indianred
 #FFFFE0 = lightyellow
@@ -48,7 +49,7 @@ Keras Kernel Weights:
 #FFFF00 = yellow
 #006400 = darkgreen
 #8B0000 = darkred
-#FFD700 = gold
+#FFD700 = gold --->
 <table border=0px style="font-size:13px;">
   <tr>
     <td style="background-color: #90EE90">  0.014929</td>
