@@ -358,6 +358,10 @@ Keras Biases:
     <td style="background-color: #FFD700"> -0.020231</td>
     <td style="background-color: #FFD700">  0.046288</td>
     <td style="background-color: #FFD700"> -0.007113</td>
+  </tr>
+</table>
+<table border=0px style="font-size:13px;">
+  <tr>
     <td style="background-color: #00008B"> -0.013948</td>
     <td style="background-color: #00008B"> -0.023413</td>
     <td style="background-color: #00008B"> -0.001040</td>
