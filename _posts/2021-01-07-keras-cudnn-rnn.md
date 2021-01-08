@@ -43,28 +43,29 @@ Keras Kernel Weights:
 
 <table border=0px style="font-size:12px;">
   <tr>
-    <td style="background-color: green">January</td>
-    <td style="background-color: green">January</td>
-    <td style="background-color: green">January</td>
-    <td style="background-color: red">January</td>
-    <td style="background-color: red">January</td>
-    <td style="background-color: red">January</td>
-    <td style="background-color: yellow">January</td>
-    <td style="background-color: yellow">January</td>
-    <td style="background-color: yellow">January</td>
+    <td style="background-color: green">  0.014929</td>
+    <td style="background-color: green"> -0.083409</td>
+    <td style="background-color: green"> -0.135106</td>
+    <td style="background-color: red">    0.727459</td>
+    <td style="background-color: red">    0.278675</td>
+    <td style="background-color: red">   -0.227695</td>
+    <td style="background-color: yellow">-0.094435</td>
+    <td style="background-color: yellow"> 0.149277</td>
+    <td style="background-color: yellow">-0.064070</td>
   </tr>
   <tr>
-    <td style="background-color: green">January</td>
-    <td style="background-color: green">January</td>
-    <td style="background-color: green">January</td>
-    <td style="background-color: red">January</td>
-    <td style="background-color: red">January</td>
-    <td style="background-color: red">January</td>
-    <td style="background-color: yellow">January</td>
-    <td style="background-color: yellow">January</td>
-    <td style="background-color: yellow">January</td>
+    <td style="background-color: green">  0.373260</td>
+    <td style="background-color: green"> -0.460859</td>
+    <td style="background-color: green">  0.072019</td>
+    <td style="background-color: red">    0.072253</td>
+    <td style="background-color: red">    0.073156</td>
+    <td style="background-color: red">   -0.325117</td>
+    <td style="background-color: yellow">-0.577610</td>
+    <td style="background-color: yellow"> 0.193369</td>
+    <td style="background-color: yellow"> 0.552166</td>
   </tr>
 </table>
+
 
 |<span style="background-color: green"> 0.01492912 </span>|<span style="background-color: green">-0.08340913 </span>|<span style="background-color: green">-0.13510555 </span>|<span style="background-color: red">0.7274594   </span>|<span style="background-color: red">0.27867514 </span>|<span style="background-color: red">-0.22769517 </span>|<span style="background-color: yellow">-0.09443533 </span>|<span style="background-color: yellow">0.14927697 </span>|<span style="background-color: yellow">-0.06407022 </span>|
 |<span style="background-color: green"> 0.3732596  </span>|<span style="background-color: green">-0.46085864 </span>|<span style="background-color: green"> 0.0720188  </span>|<span style="background-color: red">0.07225263  </span>|<span style="background-color: red">0.0731563  </span>|<span style="background-color: red">-0.32511705 </span>|<span style="background-color: yellow">-0.5776096  </span>|<span style="background-color: yellow">0.19336885 </span>|<span style="background-color: yellow"> 0.5521658  </span>|
