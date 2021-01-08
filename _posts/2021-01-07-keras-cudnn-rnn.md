@@ -26,7 +26,7 @@ and LSTM. And will borrow the formula from NVIDIA CUDNN documentation for refere
 
 ## GRU
 
-GRU formula |
+GRU equations |
 --- |
 i<sub>t</sub> = σ(W<sub>i</sub>x<sub>t</sub> + R<sub>i</sub>h<sub>t-1</sub> + b<sub>W<sub>i</sub></sub> + b<sub>R<sub>i</sub></sub>) |
 r<sub>t</sub> = σ(W<sub>r</sub>x<sub>t</sub> + R<sub>r</sub>h<sub>t-1</sub> + b<sub>W<sub>r</sub></sub> + b<sub>R<sub>r</sub></sub>) |
@@ -235,12 +235,15 @@ code:
 
 
 ## LSTM
-it = σ(Wixt + Riht-1 + bWi + bRi)
-ft = σ(Wfxt + Rfht-1 + bWf + bRf)
-ot = σ(Woxt + Roht-1 + bWo + bRo)
-c't = tanh(Wcxt + Rcht-1 + bWc + bRc)
-ct = ft ◦ ct-1 + it ◦ c't
-ht = ot ◦ tanh(ct)
+
+LSTM equations |
+--- |
+i<sub>t</sub> = σ(W<sub>i</sub>x<sub>t</sub> + R<sub>i</sub>h<sub>t-1</sub> + b<sub>W<sub>i</sub></sub> + b<sub>R<sub>i</sub></sub>) |
+f<sub>t</sub> = σ(W<sub>f</sub>x<sub>t</sub> + R<sub>f</sub>h<sub>t-1</sub> + b<sub>W<sub>f</sub></sub> + b<sub>R<sub>f</sub></sub>) |
+o<sub>t</sub> = σ(W<sub>o</sub>x<sub>t</sub> + R<sub>o</sub>h<sub>t-1</sub> + b<sub>W<sub>o</sub></sub> + b<sub>R<sub>o</sub></sub>) |
+c'<sub>t</sub> = tanh(W<sub>c</sub>x<sub>t</sub> + R<sub>c</sub>h<sub>t-1</sub> + b<sub>W<sub>c</sub></sub> + b<sub>R<sub>c</sub></sub>) |
+c<sub>t</sub> = f<sub>t</sub> ◦ c<sub>t-1</sub> + i<sub>t</sub> ◦ c'<sub>t</sub> |
+h<sub>t</sub> = o<sub>t</sub> ◦ tanh(c<sub>t</sub>) |
 
 Keras Kernel Weights: 
 <!---
@@ -493,6 +496,8 @@ CUDNN Weights:
   </tr>
 </table>
 
+(1) the array for the cudnn is a flat array which consists of all kernels and biases.
+(2) The order is sill kernel wieights , recurrent weights and biases, However, biases are single one not double -> zeros padding.
 
 
 
