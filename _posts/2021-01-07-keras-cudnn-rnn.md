@@ -1,13 +1,12 @@
 ---
 layout: posts
-title:  "Tensorflow Keras RNN and its Backend CUDNN RNN"
+title:  "Parameters In Tensorflow Keras RNN and CUDNN RNN"
 author: kaixi_hou
-#search                   : true
-#search_full_content      : true
-#search_provider          : google
+search                   : true
+search_full_content      : true
+search_provider          : google
 comments: true
 ---
-(DRAFT)
 ## Introduction
 Recurrent Neural Network (RNN) is widely used in AI applications of handwriting
 recognition, speech recognition, etc. It essentially consists of a series of
