@@ -656,6 +656,8 @@ params = recurrent_v2._canonical_to_params(
     transpose_weights=True)
 print("CUDNN-equivalent Params:", params)
 ```
+Note, for LSTM, we don't need to change orders of the four weights/biases but
+do need to pad one row of biases to be zeros.
 
 ## Reference
 * [NVIDIA CUDNN Documentation: cudnnRNNMode_t](https://docs.nvidia.com/deeplearning/cudnn/api/index.html#cudnnRNNMode_t)
