@@ -167,9 +167,9 @@ print("Broadcast Weights", dense.get_weights())
 ```
 After the broadcast, all the nodes maintain the same params with the first node
 (Theoretically, we could broadcast params from any participant node.).  Then,
-the subsequent train steps won't need the broadcast anymore thanks to the
-gradient accumulations. Similarly, the
-broadcast communication will use NCCL if it is available.
+the subsequent train steps won't need the broadcast anymore and only 
+gradient accumulations will be performed. Similarly, the
+broadcast communication can benefit from NCCL if it is available.
 ```
 [1,0]:Broadcast Weights
 [1,0]:[array([[-0.3814857, -0.3814857, -0.3814857],
