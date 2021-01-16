@@ -13,7 +13,7 @@ size and data consumption are too large. Horovod exhibits many benefits over the
 standard distributed techniques provided by Tensorflow. The official document
 has already shown that only a couple of steps can allow users to enjoy the
 simplicity of training models at scale. This post, by contrast, focuses on
-explaining what happens over the model parameters and their gradients during
+explaining what happens to the model parameters and their gradients during
 training with TF + Horovod.
 
 ## A Simple Example
