@@ -87,18 +87,17 @@ values. For the forward pass, no communication is needed.
 ```
 
 ## Backward Pass
-Then, we wrap the gradient tape with DistributedGridentType and run the backward
-pass as:
+Before computing the gradients, we wrap the gradient tape with
+`hvd.DistributedGridentType()` as:
 ```python
 t = hvd.DistributedGradientTape(t)
 
 grads = t.gradient(loss, dense.trainable_variables)
 print("Grads", grads)
-
 ```
-The outputs are like the following. We can see that the gradients are same for
-both ranks because during the gradient computation, the horovod performs all
-reduce communication to accumulate the gradients from different ranks.
+The output gradients are like the following and they are same between the two
+nodes since Horovod performs an all-reduce communication over the local
+gradients.
 ```
 [1,0]:Grads 
 [1,0]:[<tf.Tensor: shape=(2, 3), dtype=float32, numpy=
@@ -113,14 +112,9 @@ reduce communication to accumulate the gradients from different ranks.
 [1,1]: <tf.Tensor: shape=(3,), dtype=float32, numpy=
 [1,1]:    array([4., 4., 4.], dtype=float32)>]
 ```
-To confirm it if no t = hvd.DistributedGradientTape(t) added, we will get the
-following. Appareently, the there is reduce mean applied between weights from
-different nodes. Note, the communication is not necessary synchronized with
-backward computation. With the GPUs, the communication is aynchronization, and
-only when a time interval the communication will be done and also the
-communication is not launched when any gradient tensor is ready. check this CYC TIME FUSION for more info.
-If the underlying machine supports nccl, the all-reduce communcation is based on
-it.
+If the `hvd.DistributedGridentType()` line is deleted, we are able to see the
+calculated local gradients before the all-reduce as below. Apparently, the
+above gradients are mean gradients from all participant nodes. 
 ```
 [1,0]:Grads
 [1,0]:[<tf.Tensor: shape=(2, 3), dtype=float32, numpy=
@@ -135,9 +129,17 @@ it.
 [1,1]: <tf.Tensor: shape=(3,), dtype=float32, numpy=
 [1,1]:    array([4., 4., 4.], dtype=float32)>]
 ```
+Under the hood, the communication is often asynchronized with the backward
+computation when GPUs are available. In addition, the NCCL all-reduce will be
+used if it is installed. To further boost the performance, Horovod will send
+batches of tensors between some predefined intervals rather than performing
+communication everytime when a tensor is ready in order to reduce launching
+overhead. Also, small tensors might be fused to bigger ones before
+communication. Please check `HOROVOD_CYCLE_TIME` and `HOROVOD_FUSION_THRESHOLD`
+for more information.
 
-So, after the backward pass, we have each rank have same gadients and we apply
-the updateing (the above formula) the weights. 
+After the backward pass, each node keeps the same gadients and then we update
+the parameters. 
 ```python
 opt.apply_gradients(zip(grads, dense.trainable_variables))
 print("Updated Weights", dense.get_weights())
@@ -145,32 +147,31 @@ print("Updated Weights", dense.get_weights())
 ```
 [1,0]:Updated Weights
 [1,0]:[array([[-0.3814857, -0.3814857, -0.3814857],
-[1,0]:       [-1.129148 , -1.129148 , -1.129148 ]], dtype=float32),
+[1,0]:        [-1.129148 , -1.129148 , -1.129148 ]], dtype=float32),
 [1,0]: array([-3., -3., -3.], dtype=float32)]
 [1,1]:Updated Weights
 [1,1]:[array([[-1.3814857, -1.3814857, -1.3814857],
-[1,1]:       [-2.129148 , -2.129148 , -2.129148 ]], dtype=float32),
+[1,1]:        [-2.129148 , -2.129148 , -2.129148 ]], dtype=float32),
 [1,1]: array([-4., -4., -4.], dtype=float32)]
 ```
-You can see the updated weights
-are not same because the init weights are different for the two ranks. To make
-sure all the ranks are on the same page, we can (1) init the weights to be
-same values (2) broadcast the weights from the very first step. To do (1), for
-example, we can limit the kernel init and bias init in above to be same for
-different ranks and make sure they use same seeds. However, in practice, (1) is 
-hard to realize when the model become complex. (2) is more simple, we only make
-sure the weights are broadcast to each rank after the first train step, like.
+We can see the updated parameters from the two nodes are different since the
+initial parameters are different in the first place. To make sure all the nodes
+start from the same states, we can (1) initialize the params to be same values
+in all nodes or (2) broadcast the updated params after this first step of
+training. To do (1), for example, we could limit the param initializers to use
+the same seeds in all nodes. However, (1) might be tricky to realize in practice
+especially when the model become complex. By contrast, (2) is more achievable
+and we only need to conduct a broadcast after the first train step, like:
 ```python
 hvd.broadcast_variables(dense.variables, root_rank=0)
 print("Broadcast Weights", dense.get_weights())
 
 ```
-After the broadcast all the ranks will use the same weights as the first rank
-(Theretically, we can broadcast any rank).
-Then the following train steps don't need the broadcast anymore since they are
-already on the same page and communication later is only for gradient
-all-reduce. Still If the underlying machine supports nccl, the broadcast communcation is based on
-NCCL.
+After the broadcast, all the nodes maintain the same params with the first node
+(Theoretically, we could broadcast params from any participant node.).  Then,
+the subsequent train steps won't need the broadcast anymore thanks to the
+gradient accumulations. Similarly, the
+broadcast communication will use NCCL if it is available.
 ```
 [1,0]:Broadcast Weights
 [1,0]:[array([[-0.3814857, -0.3814857, -0.3814857],
@@ -182,3 +183,6 @@ NCCL.
 [1,1]: array([-3., -3., -3.], dtype=float32)]
 ```
 
+## Reference
+* [Meet Horovod: Uber’s Open Source Distributed Deep Learning Framework for TensorFlow](https://eng.uber.com/horovod/)
+* [Horovod Tensor Fusion](https://horovod.readthedocs.io/en/stable/tensor-fusion_include.html)
