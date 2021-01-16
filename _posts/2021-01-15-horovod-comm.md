@@ -2,12 +2,11 @@
 layout: posts
 title:  "Communications in Distributed Training with Tensorflow + Horovod"
 author: kaixi_hou
-#search                   : true
-#search_full_content      : true
-#search_provider          : google
-#comments: true
+search                   : true
+search_full_content      : true
+search_provider          : google
+comments: true
 ---
-(Draft, not finished)
 ## Introduction
 Horovod is an open source toolkit for distributed deep learning when the models'
 size and data consumption are too large. Horovod exhibits many benefits over the
