@@ -165,7 +165,6 @@ and we only need to conduct a broadcast after the first train step, like:
 ```python
 hvd.broadcast_variables(dense.variables, root_rank=0)
 print("Broadcast Weights", dense.get_weights())
-
 ```
 After the broadcast, all the nodes maintain the same params with the first node
 (Theoretically, we could broadcast params from any participant node.).  Then,
