@@ -59,19 +59,18 @@ opt = tf.optimizers.SGD(1.0)
 ```
 
 ## Forward Pass
-Then, we start one step of training to check what happens under the hood when
-multiple nodes/GPUs are used. For the forward pass:
+We trigger a single step of training and take a look at what happens under the hood.
 ```python
 with tf.GradientTape() as t:
   y = dense(x)
   loss = tf.reduce_sum(y)
   print("Loss", loss)
   print("Weights", dense.get_weights())
-
 ```
-If we run it with horovodrun -np 2, we are using 2 nodes/GPUs to train.
-Apparently, the weights are correctly initialzed for the two ranks and they
-compute different loss values. For the forward, no communication is needed.
+Suppose we execute the script with `horovodrun -np 2 python demo.py`, meaning
+two nodes/GPUs are used. The outputs are below and as expected, the parameters
+are initialized differently on the two nodes and we get two different loss
+values. For the forward pass, no communication is needed.
 ```
 [1,0]:Loss 
 [1,0]:tf.Tensor(26.431675, shape=(), dtype=float32)
