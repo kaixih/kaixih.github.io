@@ -112,8 +112,8 @@ gradients.
 [1,1]:    array([4., 4., 4.], dtype=float32)>]
 ```
 If the `hvd.DistributedGridentType()` line is deleted, we are able to see the
-calculated local gradients before the all-reduce as below. Apparently, the
-above gradients are mean gradients from all participant nodes. 
+original calculated local gradients (before the excluded all-reduce) as below.
+Apparently, the above gradients are mean gradients from all participant nodes. 
 ```
 [1,0]:Grads
 [1,0]:[<tf.Tensor: shape=(2, 3), dtype=float32, numpy=
@@ -131,10 +131,10 @@ above gradients are mean gradients from all participant nodes.
 Under the hood, the communication is often asynchronized with the backward
 computation when GPUs are available. In addition, the NCCL all-reduce will be
 used if it is installed. To further boost the performance, Horovod will send
-batches of tensors between some predefined intervals rather than performing
+batches of tensors between some predefined time intervals rather than performing
 communication everytime when a tensor is ready in order to reduce launching
 overhead. Also, small tensors might be fused to bigger ones before
-communication. Please check `HOROVOD_CYCLE_TIME` and `HOROVOD_FUSION_THRESHOLD`
+communication for better throughput. Please check `HOROVOD_CYCLE_TIME` and `HOROVOD_FUSION_THRESHOLD`
 for more information.
 
 After the backward pass, each node keeps the same gadients and then we update
@@ -154,8 +154,8 @@ print("Updated Weights", dense.get_weights())
 [1,1]: array([-4., -4., -4.], dtype=float32)]
 ```
 We can see the updated parameters from the two nodes are different since the
-initial parameters are different in the first place. To make sure all the nodes
-start from the same states, we can (1) initialize the params to be same values
+initial parameters are already different. To make sure all the nodes
+be with the same states, we can (1) initialize the params to be same values
 in all nodes or (2) broadcast the updated params after this first step of
 training. To do (1), for example, we could limit the param initializers to use
 the same seeds in all nodes. However, (1) might be tricky to realize in practice
