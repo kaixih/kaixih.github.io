@@ -11,20 +11,20 @@ author: kaixi_hou
 ## Introduction
 Horovod is an open source toolkit for distributed deep learning when the models'
 size and data consumption are too large. Horovod exhibits many benefits over the
-standard distributed techniques provided by Tensorflow. This post Training deep learning models 
+standard distributed techniques provided by Tensorflow. The official document
+has already shown that only a couple of steps can allow users to enjoy the
+simplicity of training models at scale. This post, by contrast, focuses on
+explaining what happens over the model parameters and their gradients during
+training with TF + Horovod.
 
-Mainly about how the gradients and weights are communicated when training with
-TF and Horovod.
-
-For illustration purpose, use a single dense layer and focus on how
-communication is done. Here is the setup, using hvd is simple: import and init
-it and bind to different GPUs. After that we define a single Dense layer, which 
-takes a 4x2 matrix and output 4x3 matrix. So, the total weights are 2x3 kernels
-and 3 biases. we intentially the set inputs to be different for differnt ranks
-to mimic the behavior that different ranks load different piece of training
-data. Similarly differnet rank initializes theirs model with different
-parameters. The optimizer is SGD learning rate 1.0 with no momentum or nestkov
-to realize the simplest update formulate w = old_w+1xg.
+## A Simple Example
+For illustration purpose, we use a one-dense-layer model which takes in a 4x2
+input tensor and outputs a 4x3 tensor. Therefore, the total parameters of
+interest are 2x3 weights and 3 biases. We also adopt a typical SGD optimizer and
+set the learning rate as 1.0 so that the updating formula is simply `new_weights
+= old_weights + gradients`. The following python script shows this model with
+the settings of Horovod. To mimic the real-world scenarios, we intentially
+generate different inputs and parameters for different nodes.
 
 ```python
 import tensorflow as tf
@@ -44,19 +44,21 @@ rows = 4
 cols = 2
 units = 3
 
-# Mimic different inputs for each rank
+# Mimic different inputs for each node.
 tf.random.set_seed(hvd.rank())
 np.random.seed(hvd.rank())
 
 x = np.random.random([rows, cols]).astype(np.float32)
 
-# Mimic different initial weights for each rank
+# Mimic different initial parameters for each node.
 dense = layers.Dense(units,
                      kernel_initializer='ones' if hvd.rank() == 0 else 'zeros',
                      bias_initializer='ones' if hvd.rank() == 0 else 'zeros')
 
 opt = tf.optimizers.SGD(1.0)
 ```
+
+## Forward Pass
 Then, we start one step of training to check what happens under the hood when
 multiple nodes/GPUs are used. For the forward pass:
 ```python
@@ -85,6 +87,7 @@ compute different loss values. For the forward, no communication is needed.
 [1,1]: array([0., 0., 0.], dtype=float32)]
 ```
 
+## Backward Pass
 Then, we wrap the gradient tape with DistributedGridentType and run the backward
 pass as:
 ```python
