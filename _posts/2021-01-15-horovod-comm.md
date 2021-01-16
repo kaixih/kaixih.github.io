@@ -7,8 +7,12 @@ author: kaixi_hou
 #search_provider          : google
 #comments: true
 ---
-(Draft)
+(Draft, not finished)
 ## Introduction
+Horovod is an open source toolkit for distributed deep learning when the models'
+size and data consumption are too large. Horovod exhibits many benefits over the
+standard distributed techniques provided by Tensorflow. This post Training deep learning models 
+
 Mainly about how the gradients and weights are communicated when training with
 TF and Horovod.
 
