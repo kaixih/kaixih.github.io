@@ -134,7 +134,7 @@ used if installed. To reduce launch overhead, Horovod will send batches of
 tensors at intervals instead of performing communication the instance that a
 tensor is ready. Moreover, to achieve high throughput, small tensors might be
 fused to bigger ones before communication can take place. Please check
-`HOROVOD_CYCLE_TIME` and `HOROVOD_FUSION_THRESHOLD` for more information.
+`--cycle-time-ms` and `--fusion-threshold-mb` command options for more information.
 
 Let's get back to the above example with `hvd.DistributedGridentType()`. After
 the backward pass, each node keeps the same gadients and then we can update the
