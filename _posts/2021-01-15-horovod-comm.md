@@ -161,7 +161,8 @@ training. To do (1), for example, we should use the same parameter initializers
 with same seeds for each node. Note, the sample script in this post purposely
 uses different initializers for the two nodes to simulate models that start in
 different states from different nodes. By contrast, (2) might be more achievable
-and we only need to conduct a broadcast after the first train step, like:
+and we only need to conduct a broadcast after the first train step without
+worrying about how the model parameters are defined/initialized, like:
 ```python
 hvd.broadcast_variables(dense.variables, root_rank=0)
 print("Broadcast Weights", dense.get_weights())
