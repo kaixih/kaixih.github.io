@@ -157,9 +157,10 @@ We can see the updated parameters from the two nodes are different since the
 initial parameters are already different. To make sure all the nodes
 be with the same states, we can (1) initialize the parameters to be same values
 in all nodes, or (2) broadcast the updated parameters after this first step of
-training. To do (1), for example, we could limit the param initializers to use
-the same seeds in all nodes. However, (1) might be tricky to realize in practice
-especially when the model become complex. By contrast, (2) is more achievable
+training. To do (1), for example, we should use the same parameter initializers
+with same seeds for each node. Note, the sample script in this post purposely
+uses different initializers for the two nodes to simulate models that start in
+different states from different nodes. By contrast, (2) might be more achievable
 and we only need to conduct a broadcast after the first train step, like:
 ```python
 hvd.broadcast_variables(dense.variables, root_rank=0)
