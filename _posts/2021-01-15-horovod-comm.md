@@ -136,8 +136,9 @@ tensor is ready. Moreover, to achieve high throughput, small tensors might be
 fused to bigger ones before communication can take place. Please check
 `HOROVOD_CYCLE_TIME` and `HOROVOD_FUSION_THRESHOLD` for more information.
 
-After the backward pass, each node keeps the same gadients and then we update
-the parameters. 
+Let's get back to the above example with `hvd.DistributedGridentType()`. After
+the backward pass, each node keeps the same gadients and then we can update the
+parameters with the simplified formula: `new_weights = old_weights + gradients`. 
 ```python
 opt.apply_gradients(zip(grads, dense.trainable_variables))
 print("Updated Weights", dense.get_weights())
@@ -154,8 +155,8 @@ print("Updated Weights", dense.get_weights())
 ```
 We can see the updated parameters from the two nodes are different since the
 initial parameters are already different. To make sure all the nodes
-be with the same states, we can (1) initialize the params to be same values
-in all nodes or (2) broadcast the updated params after this first step of
+be with the same states, we can (1) initialize the parameters to be same values
+in all nodes, or (2) broadcast the updated parameters after this first step of
 training. To do (1), for example, we could limit the param initializers to use
 the same seeds in all nodes. However, (1) might be tricky to realize in practice
 especially when the model become complex. By contrast, (2) is more achievable
@@ -164,11 +165,10 @@ and we only need to conduct a broadcast after the first train step, like:
 hvd.broadcast_variables(dense.variables, root_rank=0)
 print("Broadcast Weights", dense.get_weights())
 ```
-After the broadcast, all the nodes maintain the same params with the first node
-(Theoretically, we could broadcast params from any participant node.).  Then,
-the subsequent train steps won't need the broadcast anymore and only 
-gradient accumulations will be performed. Similarly, the
-broadcast communication can benefit from NCCL if it is available.
+After the broadcast, all the nodes maintain the same parameters with the first
+node, though theoretically we could broadcast parameters from any participant
+node. Similar to the all-reduce, the broadcast communication can also benefit
+from NCCL if available.
 ```
 [1,0]:Broadcast Weights
 [1,0]:[array([[-0.3814857, -0.3814857, -0.3814857],
@@ -179,7 +179,9 @@ broadcast communication can benefit from NCCL if it is available.
 [1,1]:        [-1.129148 , -1.129148 , -1.129148 ]], dtype=float32),
 [1,1]: array([-3., -3., -3.], dtype=float32)]
 ```
-
+Lastly, the subsequent train steps will repeat the above forward + backward
+passes with gradient accumulations (all-reduce) but no more broadcast will be
+necessary.
 ## Reference
 * [Meet Horovod: Uber’s Open Source Distributed Deep Learning Framework for TensorFlow](https://eng.uber.com/horovod/)
 * [Horovod Tensor Fusion](https://horovod.readthedocs.io/en/stable/tensor-fusion_include.html)
