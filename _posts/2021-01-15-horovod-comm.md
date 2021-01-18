@@ -129,9 +129,12 @@ Apparently, the above gradients are mean gradients from all participant nodes.
 [1,1]:    array([4., 4., 4.], dtype=float32)>]
 ```
 Under the hood, the communication is often asynchronized with the backward
-propagation when GPUs are available. In addition, the NCCL all-reduce will be
-used if installed. To reduce launch overhead, Horovod will send batches of
-tensors at intervals instead of performing communication the instance that a
+propagation when GPUs are available (Note, this is different from saying Horovod
+conducts synchronous training, meaning the gradient aggregation takes place only
+when all nodes have done their local computation and received all the other
+gradidents.). In addition, the NCCL all-reduce will be used if installed. To
+reduce launch overhead, Horovod will send batches of tensors at intervals
+instead of performing communication the instance that a
 tensor is ready. Moreover, to achieve high throughput, small tensors might be
 fused to bigger ones before communication can take place. Please check
 `--cycle-time-ms` and `--fusion-threshold-mb` command options for more information.
@@ -187,3 +190,4 @@ necessary.
 ## Reference
 * [Meet Horovod: Uber’s Open Source Distributed Deep Learning Framework for TensorFlow](https://eng.uber.com/horovod/)
 * [Horovod Tensor Fusion](https://horovod.readthedocs.io/en/stable/tensor-fusion_include.html)
+* [Distributed TensorFlow](https://www.oreilly.com/content/distributed-tensorflow/)
