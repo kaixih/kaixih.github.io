@@ -129,10 +129,10 @@ Apparently, the above gradients are mean gradients from all participant nodes.
 [1,1]:    array([4., 4., 4.], dtype=float32)>]
 ```
 Under the hood, the communication is often asynchronized with the backward
-propagation when GPUs are available (Note, this is different from saying Horovod
+propagation when GPUs are available. Note, this is different from saying Horovod
 conducts synchronous training, which means aggregation of one gradient takes place only
 when each node has done its local computation of that gradient and received
-the same gradients from all the other nodes.). In addition, the NCCL all-reduce
+the same gradients from all the other nodes. In addition, the NCCL all-reduce
 will be used if installed. To reduce launch overhead, Horovod will send batches
 of tensors at intervals instead of performing communication the instance that a
 tensor is ready. Moreover, to achieve high throughput, small tensors might be
