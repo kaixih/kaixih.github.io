@@ -10,13 +10,23 @@ comments: true
 ---
 (Under construction)
 ## Introduction
+My previous post, "[Fused Operations in
+Tensorflow](https://kaixih.github.io/fused-api/)", introduced the basics of
+fusion operations in deep learning by showing how to enable the grappler
+optimizer in Tensorflow to recognize the supported patterns and then fuse them
+together for better performance. In that post, I talked about the Conv-Bias-Relu
+pattern, one of the most common patterns we can find in CNN models. In this
+post, by constrast, I will dive deeper into its computational patterns and
+discuss why and how they can be fused.
+
 ## Convolution Pattern
-Let's start from this following figure, which represents a simple convolution that takes in a 3x3 input and 2x2 weight and generates a 2x2 output.
+Let's start from this following figure, which represents a simple convolution
+that takes in a 3x3 input and 2x2 weight and generates a 2x2 output.
+
 <p align=center> Fig 0. Convolution's Computational Pattern </p>
 ![Convolution Pattern](/assets/posts_images/conv_pattern.PNG)
 
 ### Convolution Forward
-
 
 Convolution equations |
 --- |
@@ -25,7 +35,8 @@ y<sub>12</sub> = w<sub>11</sub>x<sub>12</sub> + w<sub>12</sub>x<sub>13</sub> + w
 y<sub>21</sub> = w<sub>11</sub>x<sub>21</sub> + w<sub>12</sub>x<sub>22</sub> + w<sub>21</sub>x<sub>31</sub> + w<sub>22</sub>x<sub>32</sub> |
 y<sub>22</sub> = w<sub>11</sub>x<sub>22</sub> + w<sub>12</sub>x<sub>23</sub> + w<sub>21</sub>x<sub>32</sub> + w<sub>22</sub>x<sub>33</sub> |
 
-The following tensorflow code shows a concrete example.
+The above set of equations map the outputs with the inputs. In Tensorflow, we
+can use a single call to `conv2d` to realize the computation.
 ```python
 import tensorflow as tf
 x = tf.reshape(tf.range(0, 9, dtype=tf.float32), (1, 3, 3, 1))
@@ -48,11 +59,11 @@ y:
  [20. 24.]]
 ```
 
-
 ### Convolution Backward
-Suppose e is the error (or cost/loss) and dy is same with ∂e/∂y.
+Suppose e is the error returned by the cost/loss function and dy is equivalent
+with ∂e/∂y. According to the above equations, we can get dw = ∂e/∂w =
+(∂e/∂y)(∂y/∂w) = dy⋅x. More precisely, the equations for dw are:
 
-Roughly speaking, dw = ∂e/∂w = (∂e/∂y)(∂y/∂w) = dy⋅x
 Weight gradient equations |
 --- |
 dw<sub>11</sub> = dy<sub>11</sub>x<sub>11</sub> + dy<sub>12</sub>x<sub>12</sub> + dy<sub>21</sub>x<sub>21</sub> + dy<sub>22</sub>x<sub>22</sub> |
@@ -60,7 +71,10 @@ dw<sub>12</sub> = dy<sub>11</sub>x<sub>12</sub> + dy<sub>12</sub>x<sub>13</sub> 
 dw<sub>21</sub> = dy<sub>11</sub>x<sub>21</sub> + dy<sub>12</sub>x<sub>22</sub> + dy<sub>21</sub>x<sub>31</sub> + dy<sub>22</sub>x<sub>32</sub> |
 dw<sub>22</sub> = dy<sub>11</sub>x<sub>22</sub> + dy<sub>12</sub>x<sub>23</sub> + dy<sub>21</sub>x<sub>32</sub> + dy<sub>22</sub>x<sub>33</sub> |
 
-Essentially, we perform a convolution with x as input and dy as weight.
+In TF, we can call `conv2d_backprop_filter` to get the dw.  As for the
+computational pattern, it is still a convolution but with x as input and dy as
+weight. Here is an example showing the results from `conv2d_backprop_filter` can
+be matched by using `conv2d`.
 ```python
 x = tf.reshape(tf.range(0, 9, dtype=tf.float32), (1, 3, 3, 1))
 print("x:\n", x[0, :, :, 0].numpy())
@@ -91,7 +105,8 @@ dw_equivalent:
  [20. 24.]]
 ```
 
-Roughly speaking, dx = ∂e/∂x = (∂e/∂y)(∂y/∂x) = dy⋅w
+Similarly, the input gradients can be calculated by dx = ∂e/∂x = (∂e/∂y)(∂y/∂x) = dy⋅w.
+
 Input gradient equations |
 --- |
 dx<sub>11</sub> = w<sub>11</sub>dy<sub>11</sub>                                                                                                 |
@@ -104,7 +119,11 @@ dx<sub>31</sub> = w<sub>21</sub>dy<sub>21</sub>                                 
 dx<sub>32</sub> = w<sub>22</sub>dy<sub>21</sub> + w<sub>21</sub>dy<sub>22</sub>                                                                 |
 dx<sub>33</sub> = w<sub>22</sub>dy<sub>22</sub>                                                                                                 |
 
-Essentially, we perform a convolution with dy as input and w as weight.
+In TF, we can call `conv2d_backprop_input` to get the dx. The computation
+pattern is still a convolution but the input becomes the dy and the weight ends
+up being a reversed w. So, to match the results from `conv2d_backprop_input`, we
+need to conduct some padding over the dy and reverse the w before calling the
+`conv2d`.
 ```python
 dy = tf.ones((1, 2, 2, 1))
 print("dy:\n", dy[0, :, :, 0].numpy())
@@ -149,15 +168,19 @@ dx_equivalent=
 
 
 ### Convolution in a Graph
+Understanding the input/output of convolution forward/backward operations can
+help us get an idea of how the graph is built when performing the training.
 
 <p align=center> Fig 1. Convolution </p>
 ![Convolution In a Graph](/assets/posts_images/conv2d.PNG)
 
 ## BiasAdd Pattern
 ### BiasAdd Forward
+
 BiasAdd equations |
 --- |
 y = x + b |
+
 ### BiasAdd Backward
 db = ∂e/∂b = (∂e/∂y)(∂y/∂b) = dy
 dx = ∂e/∂x = (∂e/∂y)(∂y/∂x) = dy
@@ -169,16 +192,19 @@ dx = ∂e/∂x = (∂e/∂y)(∂y/∂x) = dy
 
 ## ReLU Pattern
 ### ReLU Forward
+
 ReLU equations |
 --- |
 y = 0, x ≤ 0 |
 y = x, x > 0 |
 
 ### ReLU Backward
+
 Input gradient equations |
 --- |
 dx = 0, y ≤ 0 (or x ≤ 0) |
 dx = dy, y > 0 (or x > 0) |
+
 We use y rather than x, because it will be more friendly for fusion.
 ### ReLU in a Graph
 
