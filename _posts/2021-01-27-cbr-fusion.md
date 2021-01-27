@@ -1,7 +1,7 @@
 ---
 layout: posts
 title:  "Demystifying the Conv-Bias-ReLU Fusion"
-#published: false
+published: false
 author: kaixi_hou
 search                   : true
 search_full_content      : true
@@ -169,7 +169,7 @@ dx_equivalent=
 
 ### Convolution in a Graph
 Understanding the input/output of convolution forward/backward operations can
-help us get an idea of how the graph is built when performing the training.
+help us get an idea of how the graph is built when performing the training. The highlight is that the backward pass needs the input of the forward pass but not its output.
 
 <p align=center> Fig 1. Convolution </p>
 ![Convolution In a Graph](/assets/posts_images/conv2d.PNG)
