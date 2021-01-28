@@ -8,7 +8,6 @@ search_full_content      : true
 search_provider          : google
 comments: true
 ---
-(Under construction)
 ## Introduction
 My previous post, "[Fused Operations in
 Tensorflow](https://kaixih.github.io/fused-api/)", introduced the basics of
@@ -203,8 +202,8 @@ the db as well as dx, which are essentially a forward operation of dy.
 
 Bias/Input gradient equations |
 --- |
-db = ∂e/∂b = (∂e/∂y)(∂y/∂b) = dy
-dx = ∂e/∂x = (∂e/∂y)(∂y/∂x) = dy
+db = ∂e/∂b = (∂e/∂y)(∂y/∂b) = dy |
+dx = ∂e/∂x = (∂e/∂y)(∂y/∂x) = dy |
 
 ### BiasAdd in a Graph
 The figure below shows the bias add operations. Apparently, neither of the input
@@ -249,5 +248,6 @@ only its input x and w and its output y.
 ![All In a Graph](/assets/posts_images/fuse.PNG)
 
 It is worth to mention that this post focuses mainly on the scenario of training
-and the data dependencies. In reality, whether to fuse a sequence of operations
-will be more complex than it seems.
+and discusses the fusion from the perspective of the data dependencies. In
+reality, whether to fuse a sequence of operations will be more complex than it
+seems.
