@@ -241,7 +241,7 @@ the output from the forward pass.
 
 ## Putting Them All Together
 Now, we can draw all these three operations together in one figure. Based on the
-above analysis, the Conv-Bias-Relu can be safely fused as one operation since
+above analysis, the Conv-Bias-Relu can be safely fused into one operation since
 the backward pass won't use any intemediate results from the fused operation but
 only its input x, w and b and its output y. 
 <p align=center> Fig 4. Fused Ops </p>
@@ -249,5 +249,5 @@ only its input x, w and b and its output y.
 
 It is worth to mention that this post focuses mainly on the scenario of training
 and discusses the fusion from the perspective of the data dependencies. In
-reality, whether to fuse a sequence of operations will be more complex than it
+reality, the decision to fuse will be more complex than it
 seems.
