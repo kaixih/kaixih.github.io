@@ -28,7 +28,7 @@ parameters - a 3x3 input and a 2x2 weight - and outputs a 2x2 array.
 ### Convolution Forward Pass
 The convolution forward pass computes a weighted sum of the current input
 element as well as its surrounding neighbors. The process can be much easier to
-understand with the equations shown as below that matches the above Fig.0.
+understand with the equations shown as below that match the above Fig. 0.
 
 Convolution equations |
 --- |
