@@ -1,7 +1,7 @@
 ---
 layout: posts
 title:  "Demystifying the Conv-Bias-ReLU Fusion"
-published: false
+published: true
 author: kaixi_hou
 search                   : true
 search_full_content      : true
@@ -12,21 +12,24 @@ comments: true
 ## Introduction
 My previous post, "[Fused Operations in
 Tensorflow](https://kaixih.github.io/fused-api/)", introduced the basics of
-fusion operations in deep learning by showing how to enable the grappler
+operation fusion in deep learning by showing how to enable the grappler
 optimizer in Tensorflow to recognize the supported patterns and then fuse them
-together for better performance. In that post, I talked about the Conv-Bias-Relu
-pattern, one of the most common patterns we can find in CNN models. In this
-post, by constrast, I will dive deeper into its computational patterns and
-discuss why and how they can be fused.
+together for better performance. In that post, I briefly talked about the
+Conv-Bias-Relu pattern, which is a great fit for fusion. In this post, by
+constrast, I will dive deeper into the Conv-Bias-Relu computation pattern and
+discuss why and how it can be fused.
 
 ## Convolution Pattern
-Let's start from this following figure, which represents a simple convolution
-that takes in a 3x3 input and 2x2 weight and generates a 2x2 output.
+Let's start from the convolution shown in the following figure, which takes two
+parameters - a 3x3 input and a 2x2 weight - and outputs a 2x2 array.
 
 <p align=center> Fig 0. Convolution's Computational Pattern </p>
 ![Convolution Pattern](/assets/posts_images/conv_pattern.PNG)
 
-### Convolution Forward
+### Convolution Forward Pass
+The convolution forward pass computes a weighted sum of the current input
+element as well as its surrounding neighbors. The process can be much easier to
+understand with the equations shown as below that matches the above Fig.0.
 
 Convolution equations |
 --- |
@@ -35,8 +38,10 @@ y<sub>12</sub> = w<sub>11</sub>x<sub>12</sub> + w<sub>12</sub>x<sub>13</sub> + w
 y<sub>21</sub> = w<sub>11</sub>x<sub>21</sub> + w<sub>12</sub>x<sub>22</sub> + w<sub>21</sub>x<sub>31</sub> + w<sub>22</sub>x<sub>32</sub> |
 y<sub>22</sub> = w<sub>11</sub>x<sub>22</sub> + w<sub>12</sub>x<sub>23</sub> + w<sub>21</sub>x<sub>32</sub> + w<sub>22</sub>x<sub>33</sub> |
 
-The above set of equations map the outputs with the inputs. In Tensorflow, we
-can use a single call to `conv2d` to realize the computation.
+Here w, x, and y are weight, input, and output arrays respectively. To get a
+better sense of how the Tensorflow API does this, let's have a look at a code
+snippet of using `tf.nn.conv2d` to perform above computation. In the example, we
+use the synthetic data for the x and w.
 ```python
 import tensorflow as tf
 x = tf.reshape(tf.range(0, 9, dtype=tf.float32), (1, 3, 3, 1))
@@ -49,20 +54,22 @@ print("y:\n", y[0, :, :, 0].numpy())
 ```
 x:
  [[0. 1. 2.]
- [3. 4. 5.]
- [6. 7. 8.]]
+  [3. 4. 5.]
+  [6. 7. 8.]]
 w:
  [[1. 1.]
- [1. 1.]]
+  [1. 1.]]
 y:
  [[ 8. 12.]
- [20. 24.]]
+  [20. 24.]]
 ```
 
-### Convolution Backward
-Suppose e is the error returned by the cost/loss function and dy is equivalent
-with ∂e/∂y. According to the above equations, we can get dw = ∂e/∂w =
-(∂e/∂y)(∂y/∂w) = dy⋅x. More precisely, the equations for dw are:
+### Convolution Backward Pass
+The convolution backward pass is to compute the gradients of w and x. Let's
+suppose e is the error returned by any cost/loss function and thus the gradients
+of x and w are written as dw (= ∂e/∂w) and dx (= ∂e/∂x). According to the chain
+rule, we can easily get dw = ∂e/∂w = (∂e/∂y)(∂y/∂w) = dy⋅x. More precisely, the
+equations for dw are:
 
 Weight gradient equations |
 --- |
@@ -71,10 +78,13 @@ dw<sub>12</sub> = dy<sub>11</sub>x<sub>12</sub> + dy<sub>12</sub>x<sub>13</sub> 
 dw<sub>21</sub> = dy<sub>11</sub>x<sub>21</sub> + dy<sub>12</sub>x<sub>22</sub> + dy<sub>21</sub>x<sub>31</sub> + dy<sub>22</sub>x<sub>32</sub> |
 dw<sub>22</sub> = dy<sub>11</sub>x<sub>22</sub> + dy<sub>12</sub>x<sub>23</sub> + dy<sub>21</sub>x<sub>32</sub> + dy<sub>22</sub>x<sub>33</sub> |
 
-In TF, we can call `conv2d_backprop_filter` to get the dw.  As for the
-computational pattern, it is still a convolution but with x as input and dy as
-weight. Here is an example showing the results from `conv2d_backprop_filter` can
-be matched by using `conv2d`.
+In Tensorflow, `tf.compat.v1.nn.conv2d_backprop_filter` is used to calculate the
+dw. It should be noted that though `conv2d_backprop_filter` is a separate API,
+its computation pattern is essentially a convolutin but with the x as the input array
+and dy as the weight array. Therefore, for learning purposes we can still call `conv2d` to realize its
+functionality. The following script shows the results from
+`conv2d_backprop_filter` can be matched with `conv2d`. In the test, the x is
+synthetic data and we assume the dy is full of ones.
 ```python
 x = tf.reshape(tf.range(0, 9, dtype=tf.float32), (1, 3, 3, 1))
 print("x:\n", x[0, :, :, 0].numpy())
@@ -92,20 +102,22 @@ print("dw_equivalent:\n", dw_copy[:, :, 0, 0].numpy())
 ```
 x:
  [[0. 1. 2.]
- [3. 4. 5.]
- [6. 7. 8.]]
+  [3. 4. 5.]
+  [6. 7. 8.]]
 dy:
  [[1. 1.]
- [1. 1.]]
+  [1. 1.]]
 dw:
  [[ 8. 12.]
- [20. 24.]]
+  [20. 24.]]
 dw_equivalent:
  [[ 8. 12.]
- [20. 24.]]
+  [20. 24.]]
 ```
 
-Similarly, the input gradients can be calculated by dx = ∂e/∂x = (∂e/∂y)(∂y/∂x) = dy⋅w.
+Similarly, the input gradients can be calculated by dx = ∂e/∂x = (∂e/∂y)(∂y/∂x)
+= dy⋅w. From the equations below, the computation pattern is actually still a
+convolution but the input and weight end up being the dy and a reversed w. 
 
 Input gradient equations |
 --- |
@@ -119,11 +131,10 @@ dx<sub>31</sub> = w<sub>21</sub>dy<sub>21</sub>                                 
 dx<sub>32</sub> = w<sub>22</sub>dy<sub>21</sub> + w<sub>21</sub>dy<sub>22</sub>                                                                 |
 dx<sub>33</sub> = w<sub>22</sub>dy<sub>22</sub>                                                                                                 |
 
-In TF, we can call `conv2d_backprop_input` to get the dx. The computation
-pattern is still a convolution but the input becomes the dy and the weight ends
-up being a reversed w. So, to match the results from `conv2d_backprop_input`, we
-need to conduct some padding over the dy and reverse the w before calling the
-`conv2d`.
+In Tensorflow, we have `tf.compat.v1.nn.conv2d_backprop_input` to compute the
+dx. In addition, to match its results, we can still use `conv2d` but need to pad
+the dy and reverse the w before the call.  The script shows this process with
+synthetic data in w and all ones in dy.
 ```python
 dy = tf.ones((1, 2, 2, 1))
 print("dy:\n", dy[0, :, :, 0].numpy())
@@ -144,74 +155,99 @@ print("dx_equivalent=\n", dx_copy[0, :, :, 0].numpy())
 ```
 dy:
  [[1. 1.]
- [1. 1.]]
+  [1. 1.]]
 w:
  [[0. 1.]
- [2. 3.]]
+  [2. 3.]]
 dx:
  [[0. 1. 1.]
- [2. 6. 4.]
- [2. 5. 3.]]
+  [2. 6. 4.]
+  [2. 5. 3.]]
 padded dy=
  [[0. 0. 0. 0.]
- [0. 1. 1. 0.]
- [0. 1. 1. 0.]
- [0. 0. 0. 0.]]
+  [0. 1. 1. 0.]
+  [0. 1. 1. 0.]
+  [0. 0. 0. 0.]]
 reversed w=
  [[3. 2.]
- [1. 0.]]
+  [1. 0.]]
 dx_equivalent=
  [[0. 1. 1.]
- [2. 6. 4.]
- [2. 5. 3.]]
+  [2. 6. 4.]
+  [2. 5. 3.]]
 ```
 
-
 ### Convolution in a Graph
-Understanding the input/output of convolution forward/backward operations can
-help us get an idea of how the graph is built when performing the training. The highlight is that the backward pass needs the input of the forward pass but not its output.
+If we put all the input/output tensors and operation nodes into one graph, we
+can see the data flow and dependencies more clearly. The takeaway here is that
+the input x and w for the forward pass is still needed in backward convolution
+to compute dw and dx respectively. In other words, both the input x and w need
+to be alive even when the forward pass has already done. Whereas, the output y
+from the forward convolution will no longer be used in backward pass.
 
 <p align=center> Fig 1. Convolution </p>
 ![Convolution In a Graph](/assets/posts_images/conv2d.PNG)
 
 ## BiasAdd Pattern
-### BiasAdd Forward
+### BiasAdd Forward Pass
+Compared to the convolution, the bias add is much simpler. The following
+equation shows that we add the input x with the bias b to obtain y.
 
 BiasAdd equations |
 --- |
 y = x + b |
 
-### BiasAdd Backward
+### BiasAdd Backward Pass
+Since the bias b is a trainable parameter, we use the following equations to get
+the db as well as dx, which are essentially a forward operation of dy.
+
+Bias/Input gradient equations |
+--- |
 db = ∂e/∂b = (∂e/∂y)(∂y/∂b) = dy
 dx = ∂e/∂x = (∂e/∂y)(∂y/∂x) = dy
 
 ### BiasAdd in a Graph
+The figure below shows the bias add operations. Apparently, neither of the input
+nor the output from the forward pass is needed in the backward pass.
 
 <p align=center> Fig 2. BiasAdd </p>
 ![BiasAdd In a Graph](/assets/posts_images/bias.PNG)
 
 ## ReLU Pattern
-### ReLU Forward
+### ReLU Forward Pass
+The ReLU is also straightforward. From the equation below, we can learn that
+there is no trainable parameters and we only have one input x and one output y.
 
 ReLU equations |
 --- |
 y = 0, x ≤ 0 |
 y = x, x > 0 |
 
-### ReLU Backward
+### ReLU Backward Pass
+The backward pass only need to compute the dx, and to do so we can use x or y.
+Mathematically, they are same but using y would be more "fusion-friendly", which
+will be explained later.
 
 Input gradient equations |
 --- |
 dx = 0, y ≤ 0 (or x ≤ 0) |
 dx = dy, y > 0 (or x > 0) |
 
-We use y rather than x, because it will be more friendly for fusion.
 ### ReLU in a Graph
+After we put all nodes in a graph, we can observe the backward pass only needs
+the output from the forward pass.
 
 <p align=center> Fig 3. ReLU </p>
 ![ReLU In a Graph](/assets/posts_images/relu.PNG)
 
 ## Putting Them All Together
-
+Now, we can draw all these three operations together in one figure. Based on the
+above analysis, the Conv-Bias-Relu can be safely fused as one operation since
+the backward pass won't use any intemediate results from the fused operation but
+only its input x and w and its output y. 
 <p align=center> Fig 4. Fused Ops </p>
 ![All In a Graph](/assets/posts_images/fuse.PNG)
+
+It is worth to mention that this post focuses mainly on the scenario of training
+and the data dependencies. In reality, whether to fuse a sequence of operations
+will be more complex than it seems.
