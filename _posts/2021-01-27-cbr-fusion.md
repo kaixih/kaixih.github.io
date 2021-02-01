@@ -243,7 +243,7 @@ the output from the forward pass.
 Now, we can draw all these three operations together in one figure. Based on the
 above analysis, the Conv-Bias-Relu can be safely fused into one operation since
 the backward pass won't use any intemediate results from the fused operation but
-only its input x, w and b and its output y. 
+only its input x, w and its output y. 
 <p align=center> Fig 4. Fused Ops </p>
 ![All In a Graph](/assets/posts_images/fuse.PNG)
 
