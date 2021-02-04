@@ -1,7 +1,7 @@
 ---
 layout: posts
 title:  "Moving Mean and Moving Variance In Batch Normalization"
-published: true
+published: false
 author: kaixi_hou
 search                   : true
 search_full_content      : true
