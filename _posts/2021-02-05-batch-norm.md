@@ -19,7 +19,7 @@ shape/axis for different normalization types. Among them, the batch
 normalization might be the most special one, where the statistics computation is
 performed across batches. More importantly, it works differently during training
 and inference. While working on its backend optimization, I frequently
-encountered various concepts describing mean and variance: moving mean, batch
+encountered various concepts regarding mean and variance: moving mean, batch
 mean, estimated mean, and even saved mean to name a few. Therefore, this post
 will look into the differences of these terms and show you how they are used in
 deep learning framework, Tensorflow Keras Layers, and deep learning library,
@@ -28,17 +28,17 @@ CUDNN Batch Norm APIs.
 
 ## Typical Batch Norm
 In a typical batch norm, the "Moments" op will be first called to compute the
-statistics of the input `x`, i.e. the _*batch mean/variance*_ (or _*current
-mean/variance*_, _*new mean/variance*_, etc.). It only reflects the local
+statistics of the input `x`, i.e. the ___batch mean/variance___ (or ___current
+mean/variance___, ___new mean/variance___, etc.). It reflects the local
 information of `x`. As shown in Figure 1, we use `m'` and `v'` to represent
 them. After statistics computation, they are fed into the "Update" op to obtain
-the new _*moving mean/variance*_ (or _*running mean/variance*_).  The formula
-used here is `moving_*** = moving_*** ⋅ momentum + batch_*** ⋅ (1 - momentum)`
+the new ___moving mean/variance___ (or ___running mean/variance___).  The formula
+used here is `moving_* = moving_* ⋅ momentum + batch_* ⋅ (1 - momentum)`
 where the momentum is a hyperparameter. (Instead, CUDNN uses a so called
-exponential average `factor` and thus its updating formula becomes `moving_*** =
-moving_*** ⋅(1 - factor) + batch_*** ⋅factor`.) In the second step for
-normalization, the "Normalize" op will use the batch mean/variance `m'`
-and `v'` as well as the scale (gamma) and offset (beta).
+exponential average `factor` and thus its updating formula becomes `moving_* =
+moving_* ⋅(1 - factor) + batch_* ⋅factor`.) In the second step for
+normalization, the "Normalize" op will take the batch mean/variance `m'`
+and `v'` as well as the scale (`g`) and offset (`b`) to generate the output `y`.
 
 <p align=center> Figure 1. Typical batch norm in Tensorflow Keras</p>
 ![Typical Batch Norm](/assets/posts_images/bn_orig.png)
@@ -46,7 +46,7 @@ and `v'` as well as the scale (gamma) and offset (beta).
 The following script shows an example to mimic one training step of a single
 batch norm layer. Tensorflow Keras API allows us to peek the moving
 mean/variance but not the batch mean/variance. For illustrative purposes, I
-inserts some print()s to the Keras python functions to get the batch
+inserted codes to the Keras python APIs to print out the batch
 mean/variance. Note, the moving mean/variance are not trainable variables so
 that they cannot be updated during the backpropagation. For this reason, we skip
 the backward pass in the training step.
@@ -65,10 +65,10 @@ print("moving_mean(step0): ", bn.moving_mean.numpy())
 print("moving_var(step0): ", bn.moving_variance.numpy())
 print("y(step0):", y0.numpy())
 ```
-The outputs of the above code are like the below and we can see that the moving
-mean/variance are different from batch mean/variance. Since we set the momentum
+The outputs of the above code are pasted below and we can see that the moving
+mean/variance are different from the batch mean/variance. Since we set the momentum
 to 0.5 and the initial moving mean/variance to ones, the updated mean/variance
-are calculated by `moving_*** = 0.5 + 0.5 ⋅batch_***`. On the other hand, it can
+are calculated by `moving_* = 0.5 + 0.5 ⋅batch_*`. On the other hand, it can
 be confirmed that the `y_step0` is computed with the batch mean/variance through
 `(x_step0 - batch_mean) / sqrt(batch_var + 0.001)` 
 ```
@@ -101,7 +101,7 @@ moving_var(step1):
     [0.29549128 0.28121024 0.25281417]
 ```
 At last, we mimic one step of inference as below. In the script, we rename the
-moving mean/variance to _*estimized_mean/variance*_, which represents the
+moving mean/variance to ___estimized mean/variance___, which represents the
 accumulated and frozen moving mean/variance from the training stage.
 ```python
 # Inference Step
@@ -116,11 +116,11 @@ print("y(infer):", y_infer.numpy())
 From the outputs below, it is easy to verify that `y_infer` is computed with the
 estimated mean/variance rather than batch mean/variance: `(x_infer -
 estimated_mean) / sqrt(estimated_var + 0.001)`. Besides, we can see that the
-estimated mean/variance equal to the moving mean/variance from the above step1
-and will be no longer updated. To sum up, the takeaway here is that the batch
-norm will keep accumulating batch mean/variance into the moving mean/variance
-during training, which will be evolved into frozen estimated mean/variance to be
-used during inference.
+estimated mean/variance equals to the moving mean/variance from the above step1,
+indicating they are no longer updated in inference stages. To sum up, the takeaway
+here is that the batch norm will keep accumulating batch mean/variance into the
+moving mean/variance during training, which will be evolved into frozen
+estimated mean/variance to be used during inference.
  
 ```
 x(infer):
@@ -149,24 +149,24 @@ like in batch norm. There is only one big op `FusedBatchNorm` and its
 inputs/outputs are consistent with the combined "Moments" + "Update" +
 "Normalize" ops in Figure 1.  Whereas there is no simple way to get the batch
 mean/variance `m'` and `v'`, which will pose a bigger challenge for the
-synchronized batch norm. In addition, it is worth to mention that we can't
+synchronized batch norm that we will talk about later. In addition, it is worth to mention that we can't
 assume the bitwise equality of the outputs from the fused op and non-fused ops.
 <p align=center> Figure 2. Fused batch norm on GPUs</p>
 ![Fused Batch Norm](/assets/posts_images/bn_fuse.png)
 
 ## Batch Norm Backpropagation
-The backend of the FusedBatchNorm relies on the CUDNN library on GPUs, which
-introduces another terms: _*saved mean and saved inverse variance*_. As shown in
+The backend of the FusedBatchNorm relies on the CUDNN library for GPUs, which
+introduces another terms: ___saved mean and inverse variance___. As shown in
 Figure 3, we depict a forward and backward pass of batch norm using the fused
 ops. The following script reflects these two passes. From the figure, we notice
-that the FusedBatchNormGrad requires dy and g (scale) (whose mathematical basis
+that the FusedBatchNormGrad requires `dy` and `g` (scale) (whose mathematical basis
 can be found
-[here](https://kevinzakka.github.io/2016/09/14/batch_normalization/) as well as
-r1, r2, and r3.  In fact, r1 and r2 are the saved mean and inverse variance
-respectively, which are direclty related to the batch mean and variance. They
-are computed and cached from the forward pass and then used in the backward pass
+[here](https://kevinzakka.github.io/2016/09/14/batch_normalization/)) as well as
+`r1`, `r2`, and `r3`.  In fact, `r1` and `r2` are the saved mean and inverse variance
+respectively, which are computed from the batch mean and variance. They
+are produced and cached from the forward pass and then used in the backward pass
 to avoid the overhead of re-compute. To sum up, the saved mean and inverse
-variance are designed out of performance consideration for the batch norm
+variance are designed out of consideration for performance in the batch norm
 backpropagation using CUDNN.
 
 <p align=center> Figure 3. Fused batch norm and backpropagation</p>
@@ -184,8 +184,8 @@ with tf.GradientTape() as t:
   loss = tf.reduce_sum(y0)
 grads = t.gradient(loss, [x0, bn.trainable_variables])
 ```
-The saved mean and saved inverse variance (r1 and r2) are usually hidden from
-users. However, we can peek the contents by explicitly using the ops defined in
+The saved mean and saved inverse variance (`r1` and `r2`) are usually hidden from
+users in Tensorflow. However, we can still peek the contents by explicitly using the ops defined in
 `tf.raw_ops`. The following script shows the code.
 ```python
 y, batch_mean, batch_var, r1, r2, r3 = tf.raw_ops.FusedBatchNormV3(
@@ -193,11 +193,11 @@ y, batch_mean, batch_var, r1, r2, r3 = tf.raw_ops.FusedBatchNormV3(
     epsilon=0.001, exponential_avg_factor=0.5, data_format='NHWC',
     is_training=True, name=None)
 ```
-By feeding the op with the same inputs used the above exmaple, we can print the
-corresponding moving mean/variance and r1/r2. The moving mean/variance are close
-to those in the above example after the 0th step (They are not exactly same
-because we use fused op here.). Additionally, we can observe that r1 is same
-with the batch mean, while r2 is calculated by `1 / sqrt(batch_var + 0.001)`.
+By feeding the op with the same inputs used in the above exmaple, we can print
+the corresponding moving mean/variance and `r1`/`r2` for comparison. The moving
+mean/variance are same with the results from the 0th step of the above example (They
+are not exactly equivalent because we use fused op here.). Additionally, we can
+observe that `r1` is essentially the batch mean, while `r2` is calculated by `1 / sqrt(batch_var + 0.001)`.
 
 ```
 moving_mean: [0.7725448 0.7831439 0.8185034]
@@ -218,16 +218,17 @@ there we can test that the saved mean/inv variance are not required parameters.
 ## Synchronized Batch Norm
 Lastly, I would like to briefly talk about the synchronized batch norm, which
 are preferrable when performing distributed training and the batch size are too
-small for each compute node. In that case, (for example the object detection
-tasks) we can use synchronized batch norm to get better statistics. Here I will
-use the implementation from the horovod, which overrides the "Moments" op to
-conduct communication among nodes and return the _*group mean and variance*_,
-which reflects the mean and variance of samples from all participant nodes. In
-Figure 4, they are denoted as `m'` and `v'`.  Subsequently, they will be used in
-"Update" to get moving group mean/variance and in "Normalize" to get the
-outputs. As we mentioned previously, the fused op doesn't expose the batch
-mean/variance and thus it is non-trivial to communicate to get the group
-mean/variance and use them in the normalization with fused op.
+small for each compute node. In that case (e.g., the object detection
+tasks), we can use synchronized batch norm to get better statistics. Here I will
+use the implementation from the horovod: `hvd.SyncBatchNormalization`. It
+overrides the "Moments" op to conduct communication among nodes and return the
+___group mean and variance___, which reflect the mean and variance of samples
+from all participant nodes. In Figure 4, they are denoted as `m'` and `v'`.
+Subsequently, "Update" will take them to update the moving group mean/variance,
+and "Normalize" will also take them to compute the outputs. As we mentioned
+previously, the fused op doesn't expose the batch mean/variance and thus it will
+be challenging to do the communication to get the group mean/variance and therefore
+synchronized batch norm only support non-fused ops.
 
 <p align=center> Figure 4. Synchronized batch norm</p>
 ![Synchronized Batch Norm](/assets/posts_images/bn_sync.png)
@@ -246,7 +247,7 @@ print("moving_mean: ", sync_bn.moving_mean.numpy())
 print("moving_var: ", sync_bn.moving_variance.numpy())
 ```
 When running with `horovodrun -np 2 python tf_hvd_bn_sync.py`, we can get the
-outputs below, where the batch mean/variance are actually group mean/variance
+outputs below, where the batch mean/variance are actually already group mean/variance
 after communication and the moving mean/variance are computed based on them.
 ```
 [1,0]:!!! batch_mean:[0.45652372 0.5745423  0.65629953]
@@ -259,10 +260,11 @@ after communication and the moving mean/variance are computed based on them.
 [1,1]:moving_var:[0.5328808  0.53550667 0.50261563]
 ```
 Note, the dot lines showing the communication in Figure 4 might not precisely
-depict what happens under the hood. Though the group mean is simply the average
-of batch means from different ranks that can be done through an allreduce, the
+depict what happens under the hood. The group mean is simply the average
+of batch means from different ranks that can be done through an allreduce
+communication; however, the
 group variance needs a new round of computation with the updated group mean
-instead of communication: `(x - group_mean) ^ 2 / (N⋅batch_size)`, where `N` is
+rather than communication: `(x - group_mean) ^ 2 / (N⋅batch_size)`, where `N` is
 number of ranks.
 
 The complete python script is
