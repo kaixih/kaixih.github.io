@@ -1,7 +1,7 @@
 ---
 layout: posts
 title:  "Moving Mean and Moving Variance In Batch Normalization"
-published: true
+published: false
 author: kaixi_hou
 search                   : true
 search_full_content      : true
@@ -238,5 +238,11 @@ for the variance. The group variance cannot averge batch variance from different
 
 The  full code is
 [here](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_hvd_bn_sync.py).
+
+## Reference
+* [Tensorflow Batch Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)
+* [Deriving the Gradient for the Backward Pass of Batch Normalization](https://kevinzakka.github.io/2016/09/14/batch_normalization/)
+* [CUDNN Batch Normalization API](https://docs.nvidia.com/deeplearning/cudnn/api/index.html#cudnnBatchNormalizationForwardTraining)
+* [Add SyncBatchNormalization layer for TensorFlow](https://github.com/horovod/horovod/pull/2075)
 
 
