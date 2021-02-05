@@ -10,37 +10,47 @@ comments: true
 ---
 
 ## Introduction
-My previous post xxx has talked about differnt types of normalizations. which
-all conist two part, statistics computing and normalization. Their computation
-over different axis according to norm types. In them,
-batch normalization might be the most different one, which needs to computattion
-accross the batch axis, and importantly, batch normalization works differently
-during training and during inference. While working on the backend of BN, I hear of
-things moving mean, batch mean, estimated mean, and even saved mean. They are sometimes
-confusing and in this post I want to talk about the difference of them and show
-how they are used. This will cover some Tensorflow karas batch norm layer and
-its backend CUDNN bactch norm APIs.
+On my previous post [Inside Normalizations of
+Tensorflow](https://kaixih.github.io/norm-patterns/) we discussed three common
+normalizations used in deep learning. They have in common a two-step
+computation: (1) statistics computation to get mean and variance and (2)
+normalization with scale and shift, though each step requires different
+shape/axis for different normalization types. Among them, the batch
+normalization might be the most special one, where the statistics computation is
+performed across batches. More importantly, it works differently during training
+and inference. While working on its backend optimization, I frequently
+encountered various concepts describing mean and variance: moving mean, batch
+mean, estimated mean, and even saved mean to name a few. Therefore, this post
+will look into the differences of these terms and show you how they are used in
+deep learning framework, Tensorflow Keras Layers, and deep learning library,
+CUDNN Batch Norm APIs.
+
 
 ## Typical Batch Norm
-In the typical batch norm, the moments will be first called to calculate the
-_*batch mean/variance*_ (or _*corrent mean/variance*_, _*new mean/variance*_, etc.) it is only reflect the
-current input x's statistics. As shown in Figure 1, the m' and v' are them.
-Then, they are fed into update op to update the _*moving mean/variance*_ (or
-_*running mean/variance*_). Update Op's formula is like `moving_xxx = moving_xxx *
-momentum + batch_mean * (1 - momentum)`. Momentum is a hyperparam. It worth to
-mention in cudnn we use `expoentialaverge_factor` which is simply
-`1-momentum`. So the formula like
-`moving_xx=moving_xx(1-factor)+batch_mean(factor)`. The normalization Op,
-however, will still use the batch_mean/variance m' and v' to do the computation.
+In a typical batch norm, the "Moments" op will be first called to compute the
+statistics of the input `x`, i.e. the _*batch mean/variance*_ (or _*current
+mean/variance*_, _*new mean/variance*_, etc.). It only reflects the local
+information of `x`. As shown in Figure 1, we use `m'` and `v'` to represent
+them. After statistics computation, they are fed into the "Update" op to obtain
+the new _*moving mean/variance*_ (or _*running mean/variance*_).  The formula
+used here is `moving_*** = moving_*** ⋅ momentum + batch_*** ⋅ (1 - momentum)`
+where the momentum is a hyperparameter. (Instead, CUDNN uses a so called
+exponential average `factor` and thus its updating formula becomes `moving_*** =
+moving_*** ⋅(1 - factor) + batch_*** ⋅factor`.) In the second step for
+normalization, the "Normalize" op will use the batch mean/variance `m'`
+and `v'` as well as the scale (gamma) and offset (beta).
 
 <p align=center> Figure 1. Typical batch norm in Tensorflow Keras</p>
 ![Typical Batch Norm](/assets/posts_images/bn_orig.png)
 
-Here I devise an example to minic a one-step training and check how the moving
-mean/var are changed. We use a single bn layer model and ignore the offset/scale
-update. It worth to note that the moving mean/var are non-trainable variable of
-the layer which will be accumulate during training and will use used in
-inference.
+The following script shows an example to mimic one training step of a single
+batch norm layer. Tensorflow Keras API allows us to peek the moving
+mean/variance but not the batch mean/variance. For illustrative purposes, I
+inserts some print()s to the Keras python functions to get the batch
+mean/variance. Note, the moving mean/variance are not trainable variables so
+that they cannot be updated during the backpropagation. For this reason, we skip
+the backward pass in the training step.
+
 ```python
 bn = tf.keras.layers.BatchNormalization(momentum=0.5,
     beta_initializer='zeros', gamma_initializer='ones',
@@ -55,7 +65,12 @@ print("moving_mean(step0): ", bn.moving_mean.numpy())
 print("moving_var(step0): ", bn.moving_variance.numpy())
 print("y(step0):", y0.numpy())
 ```
-The output of above code is like:
+The outputs of the above code are like the below and we can see that the moving
+mean/variance are different from batch mean/variance. Since we set the momentum
+to 0.5 and the initial moving mean/variance to ones, the updated mean/variance
+are calculated by `moving_*** = 0.5 + 0.5 ⋅batch_***`. On the other hand, it can
+be confirmed that the `y_step0` is computed with the batch mean/variance through
+`(x_step0 - batch_mean) / sqrt(batch_var + 0.001)` 
 ```
 x(step0):
 [[[[0.16513085 0.9014813  0.6309742 ]
@@ -76,22 +91,18 @@ y(step0):
  [[[ 1.4567168  -0.5674678   0.6462345 ]
    [ 0.20227909  0.30427837 -0.6312027 ]]]]
 ```
-Note the batch_mean/var are some injected print code to get from internal.
-First, since we set the init moving_mean/var to be ones, and momentue to be 0.5,
-by using moving_xx = 0.5+0.5batch_mean we can get batch_xxx(step0). Second, it
-is easy to confirm the
-y(step0) is use x-batch_mean/sqrt(batch_var+0.001).
+To make it closer to real settings, we conduct one more training step with
+another input `x` and these are the moving mean/variance we can get:
 
-In real case, we usually need to repeat the step many round. For simplicity, we
-can conduct a second round the these trianing with another round of fake data
-and get sth like
 ```
 moving_mean(step1):
     [0.72269297 0.63172865 0.62922215]
 moving_var(step1):
     [0.29549128 0.28121024 0.25281417]
 ```
-Then we do an inference:
+At last, we mimic one step of inference as below. In the script, we rename the
+moving mean/variance to _*estimized_mean/variance*_, which represents the
+accumulated and frozen moving mean/variance from the training stage.
 ```python
 # Inference Step
 x_infer = tf.random.uniform((2,1,2,3))
@@ -102,22 +113,21 @@ print("estimated_mean(infer): ", bn.moving_mean.numpy())
 print("estimated_var(infer): ", bn.moving_variance.numpy())
 print("y(infer):", y_infer.numpy())
 ```
-Here for the _*estimizedmean/var*_, they are accumulated moving_mean/var from the
-training stage. Or we can say moving_mean are evolved into estimated_mean at the
-end of training.
-We can see below that the y(infer) is using the estimazted mean/var rather than
-batch_mean/var: x-estimated_mean/sqrt(estimated_var+0.001). And the estimated_mean will no longer updated which is still
-same with movingmean(step1).
+From the outputs below, it is easy to verify that `y_infer` is computed with the
+estimated mean/variance rather than batch mean/variance: `(x_infer -
+estimated_mean) / sqrt(estimated_var + 0.001)`. Besides, we can see that the
+estimated mean/variance equal to the moving mean/variance from the above step1
+and will be no longer updated. To sum up, the takeaway here is that the batch
+norm will keep accumulating batch mean/variance into the moving mean/variance
+during training, which will be evolved into frozen estimated mean/variance to be
+used during inference.
+ 
 ```
 x(infer):
 [[[[0.8292774  0.634228   0.5147276 ]
    [0.39108086 0.5809028  0.04848182]]]
  [[[0.1776321  0.70470166 0.49190843]
    [0.3460425  0.5079107  0.2216742 ]]]]
-!!! batch_mean:
-   [0.72269297 0.63172865 0.62922215]
-!!! batch_var:
-   [0.29549128 0.28121024 0.25281417]
 estimated_mean(infer):
    [0.72269297 0.63172865 0.62922215]
 estimated_var(infer):
