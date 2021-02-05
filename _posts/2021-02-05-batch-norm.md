@@ -34,7 +34,7 @@ information of `x`. As shown in Figure 1, we use `m'` and `v'` to represent
 them. After statistics computation, they are fed into the "Update" op to obtain
 the new ___moving mean/variance___ (or ___running mean/variance___).  The formula
 used here is `moving_* = moving_* ⋅ momentum + batch_* ⋅ (1 - momentum)`
-where the momentum is a hyperparameter. (Instead, CUDNN uses a so called
+where the `momentum` is a hyperparameter. (Instead, CUDNN uses a so called
 exponential average `factor` and thus its updating formula becomes `moving_* =
 moving_* ⋅(1 - factor) + batch_* ⋅factor`.) In the second step for
 normalization, the "Normalize" op will take the batch mean/variance `m'`
@@ -141,7 +141,7 @@ y(infer):
 The complete python script is [here](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_keras_bn.py).
 
 ## Fused Batch Norm
-In the above example we explictly turn off the operation fusion by setting
+In the above example we explictly turned off the operation fusion by setting
 `fused=False` of the Keras BatchNormalization layer. In practice, however, we
 usually set it to `None` (to use fusion whenever possible) or `True` (to force
 the fusion) for better speedup. Figure 2 shows what the fused operation looks
@@ -164,7 +164,7 @@ can be found
 [here](https://kevinzakka.github.io/2016/09/14/batch_normalization/)) as well as
 `r1`, `r2`, and `r3`.  In fact, `r1` and `r2` are the saved mean and inverse variance
 respectively, which are computed from the batch mean and variance. They
-are produced and cached from the forward pass and then used in the backward pass
+are produced and cached during the forward pass and then used in the backward pass
 to avoid the overhead of re-compute. To sum up, the saved mean and inverse
 variance are designed out of consideration for performance in the batch norm
 backpropagation using CUDNN.
@@ -188,16 +188,21 @@ The saved mean and saved inverse variance (`r1` and `r2`) are usually hidden fro
 users in Tensorflow. However, we can still peek the contents by explicitly using the ops defined in
 `tf.raw_ops`. The following script shows the code.
 ```python
-y, batch_mean, batch_var, r1, r2, r3 = tf.raw_ops.FusedBatchNormV3(
+y, moving_mean, moving_var, r1, r2, r3 = tf.raw_ops.FusedBatchNormV3(
     x=x, scale=scale, offset=offset, mean=mean, variance=variance,
     epsilon=0.001, exponential_avg_factor=0.5, data_format='NHWC',
     is_training=True, name=None)
+print("moving_mean:", moving_mean.numpy())
+print("moving_var:", moving_var.numpy())
+print("saved mean:", r1.numpy())
+print("saved inv var:", r2.numpy())
 ```
 By feeding the op with the same inputs used in the above exmaple, we can print
 the corresponding moving mean/variance and `r1`/`r2` for comparison. The moving
-mean/variance are same with the results from the 0th step of the above example (They
-are not exactly equivalent because we use fused op here.). Additionally, we can
-observe that `r1` is essentially the batch mean, while `r2` is calculated by `1 / sqrt(batch_var + 0.001)`.
+mean/variance are same with the results from the 0th step of the above example
+(They are not exactly equivalent because we use fused op here.). Additionally,
+we can observe that `r1` is essentially the batch mean, while `r2` is calculated
+by `1 / sqrt(batch_var + 0.001)`.
 
 ```
 moving_mean: [0.7725448 0.7831439 0.8185034]
@@ -218,17 +223,18 @@ there we can test that the saved mean/inv variance are not required parameters.
 ## Synchronized Batch Norm
 Lastly, I would like to briefly talk about the synchronized batch norm, which
 are preferrable when performing distributed training and the batch size are too
-small for each compute node. In that case (e.g., the object detection
-tasks), we can use synchronized batch norm to get better statistics. Here I will
-use the implementation from the horovod: `hvd.SyncBatchNormalization`. It
-overrides the "Moments" op to conduct communication among nodes and return the
-___group mean and variance___, which reflect the mean and variance of samples
-from all participant nodes. In Figure 4, they are denoted as `m'` and `v'`.
-Subsequently, "Update" will take them to update the moving group mean/variance,
-and "Normalize" will also take them to compute the outputs. As we mentioned
-previously, the fused op doesn't expose the batch mean/variance and thus it will
-be challenging to do the communication to get the group mean/variance and therefore
-synchronized batch norm only support non-fused ops.
+small for each compute node. In that case (e.g., the object detection tasks), we
+can use synchronized batch norm to get better statistics by considering samples
+from different nodes. Here I will use the implementation from the horovod:
+`hvd.SyncBatchNormalization`. It overrides the "Moments" op to conduct
+communication among nodes and return the ___group mean and variance___, which
+reflect the mean and variance of samples from all participant nodes. In Figure
+4, they are denoted as `m'` and `v'`.  Subsequently, "Update" will take them to
+update the moving group mean/variance, and "Normalize" will also take them to
+compute the outputs. As we mentioned previously, the fused op doesn't expose the
+batch mean/variance and thus it will be challenging to do the communication to
+get the group mean/variance and therefore synchronized batch norm only support
+non-fused ops.
 
 <p align=center> Figure 4. Synchronized batch norm</p>
 ![Synchronized Batch Norm](/assets/posts_images/bn_sync.png)
@@ -247,8 +253,9 @@ print("moving_mean: ", sync_bn.moving_mean.numpy())
 print("moving_var: ", sync_bn.moving_variance.numpy())
 ```
 When running with `horovodrun -np 2 python tf_hvd_bn_sync.py`, we can get the
-outputs below, where the batch mean/variance are actually already group mean/variance
-after communication and the moving mean/variance are computed based on them.
+outputs below, where the batch mean/variance are actually already group
+mean/variance after the communication and the moving mean/variance are computed
+based on them.
 ```
 [1,0]:!!! batch_mean:[0.45652372 0.5745423  0.65629953]
 [1,1]:!!! batch_mean:[0.45652372 0.5745423  0.65629953]
