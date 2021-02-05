@@ -138,28 +138,40 @@ y(infer):
  [[[-1.0010114   0.13736498 -0.2725562 ]
    [-0.69172347 -0.2330758  -0.8089484 ]]]]
 ```
-The full code is
-[here](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_keras_bn.py).
+The complete python script is [here](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_keras_bn.py).
 
 ## Fused Batch Norm
-In the above example we use fused=False, which will explictly turn off using
-fused kernel. In practive, we usually leave it as None (use fusion when
-possible) or True(force to use fusion) for better
-performance. Figure 2 shows what happens when fussion is applied. We can see
-there is only one big kernel in BN `FusedBatchNorm`. The inputs/outputs are same
-with previous example, however, we cannot easily get the m' and v', which should
-be fine in most cases except for the sync batch norm that we will cover later.
-Note by turn on the fusion the resule are no guarantee of bitwise equality with
-above.
+In the above example we explictly turn off the operation fusion by setting
+`fused=False` of the Keras BatchNormalization layer. In practice, however, we
+usually set it to `None` (to use fusion whenever possible) or `True` (to force
+the fusion) for better speedup. Figure 2 shows what the fused operation looks
+like in batch norm. There is only one big op `FusedBatchNorm` and its
+inputs/outputs are consistent with the combined "Moments" + "Update" +
+"Normalize" ops in Figure 1.  Whereas there is no simple way to get the batch
+mean/variance `m'` and `v'`, which will pose a bigger challenge for the
+synchronized batch norm. In addition, it is worth to mention that we can't
+assume the bitwise equality of the outputs from the fused op and non-fused ops.
 <p align=center> Figure 2. Fused batch norm on GPUs</p>
 ![Fused Batch Norm](/assets/posts_images/bn_fuse.png)
 
 ## Batch Norm Backpropagation
-If one work with cudnn libary, we might came accross another term _*saved mean and
-saved inv variance*_, they are specially for the backpropagation. It usually hid
-from users. Therefore, if
-we apply something like we do a complete forward and backward pass. Note we
-still didn't update scale and offset. Its op graph will be liek Figure 3.
+The backend of the FusedBatchNorm relies on the CUDNN library on GPUs, which
+introduces another terms: _*saved mean and saved inverse variance*_. As shown in
+Figure 3, we depict a forward and backward pass of batch norm using the fused
+ops. The following script reflects these two passes. From the figure, we notice
+that the FusedBatchNormGrad requires dy and g (scale) (whose mathematical basis
+can be found
+[here](https://kevinzakka.github.io/2016/09/14/batch_normalization/) as well as
+r1, r2, and r3.  In fact, r1 and r2 are the saved mean and inverse variance
+respectively, which are direclty related to the batch mean and variance. They
+are computed and cached from the forward pass and then used in the backward pass
+to avoid the overhead of re-compute. To sum up, the saved mean and inverse
+variance are designed out of performance consideration for the batch norm
+backpropagation using CUDNN.
+
+<p align=center> Figure 3. Fused batch norm and backpropagation</p>
+![Batch Norm Backpropagation](/assets/posts_images/bn_grad.png)
+
 ```python
 bn = tf.keras.layers.BatchNormalization(momentum=0.5,
     beta_initializer='zeros', gamma_initializer='ones',
@@ -172,38 +184,36 @@ with tf.GradientTape() as t:
   loss = tf.reduce_sum(y0)
 grads = t.gradient(loss, [x0, bn.trainable_variables])
 ```
-In Figure 3, we notice that the backward pass needs dy, and g(scale) and also r1
-r2, r3. For the CUDNN, r1 and r2 are saved mean and
-saved inv variance respectively. In fact they are two optional paramters for
-CUDNN for performance, if not given, CUDNN has to re-compute them in the
-backward pass. In TF, they are always set.
-<p align=center> Figure 3. Fused batch norm and backpropagation</p>
-![Batch Norm Backpropagation](/assets/posts_images/bn_grad.png)
-It hard to get saved mean/inv var from keras API. fortunately, we can directly
-use the op from tf.raw ops to peek what's in them:
+The saved mean and saved inverse variance (r1 and r2) are usually hidden from
+users. However, we can peek the contents by explicitly using the ops defined in
+`tf.raw_ops`. The following script shows the code.
 ```python
 y, batch_mean, batch_var, r1, r2, r3 = tf.raw_ops.FusedBatchNormV3(
     x=x, scale=scale, offset=offset, mean=mean, variance=variance,
     epsilon=0.001, exponential_avg_factor=0.5, data_format='NHWC',
     is_training=True, name=None)
 ```
-And by using the same input as exmaple 1, we can get following outputs. The
-moving mean/var are similar to example 1 after 1st step (They are not bitwise
-same since we use fusion here). Saved mean is basically same with batch_mean and
-the saved in var are `1/sqrt(batch_var+0.001)`.
+By feeding the op with the same inputs used the above exmaple, we can print the
+corresponding moving mean/variance and r1/r2. The moving mean/variance are close
+to those in the above example after the 0th step (They are not exactly same
+because we use fused op here.). Additionally, we can observe that r1 is same
+with the batch mean, while r2 is calculated by `1 / sqrt(batch_var + 0.001)`.
+
 ```
 moving_mean: [0.7725448 0.7831439 0.8185034]
 moving_var: [0.5576107  0.5349634  0.50018483]
 saved mean: [0.5450896  0.5662878  0.63700676]
 saved inv var: [ 3.3822396  4.325596  27.981367 ]
 ```
-The full use of
-[backpropagation](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_keras_bn_grad.py) and
-[raw_ops](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_bn_raw_ops.py).
-The backend of V3 are using CUDNN calls. Here is an example of to do the same
-thing using pure c++,
-[cudnn](https://github.com/kaixih/dl_samples/blob/main/batch_norm/cudnn_batch_norm.cu).
-which we can test the saved mean/inv variance are not required parameters.
+The complete python script for the batch norm backpropagation is
+[here](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_keras_bn_grad.py).
+The script to use `tf.raw_ops` is
+[here](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_bn_raw_ops.py).
+Besides, I prepared a [CUDA
+sample](https://github.com/kaixih/dl_samples/blob/main/batch_norm/cudnn_batch_norm.cu)
+to directly call CUDNN library with the same inputs as the above example. From
+there we can test that the saved mean/inv variance are not required parameters.
+
 
 ## Synchronized Batch Norm
 Last, I would like to talk about the sync batch norm which are beneficial when
