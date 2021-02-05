@@ -216,14 +216,24 @@ there we can test that the saved mean/inv variance are not required parameters.
 
 
 ## Synchronized Batch Norm
-Last, I would like to talk about the sync batch norm which are beneficial when
-the batch size are too small for each node. Here I use a implement
-from horovod synch batch norm, which overrides the moment op to return the _*group
-mean and var*_ and then the norm op can correctly use the group mean and var.
-Therefore the m' and v' are group mean and variance and moving_mean/var and more precisely moving_group_mean as shown in Figure 4. Since its rely on the moment, it doesn't support the fused kernel.
+Lastly, I would like to briefly talk about the synchronized batch norm, which
+are preferrable when performing distributed training and the batch size are too
+small for each compute node. In that case, (for example the object detection
+tasks) we can use synchronized batch norm to get better statistics. Here I will
+use the implementation from the horovod, which overrides the "Moments" op to
+conduct communication among nodes and return the _*group mean and variance*_,
+which reflects the mean and variance of samples from all participant nodes. In
+Figure 4, they are denoted as `m'` and `v'`.  Subsequently, they will be used in
+"Update" to get moving group mean/variance and in "Normalize" to get the
+outputs. As we mentioned previously, the fused op doesn't expose the batch
+mean/variance and thus it is non-trivial to communicate to get the group
+mean/variance and use them in the normalization with fused op.
+
 <p align=center> Figure 4. Synchronized batch norm</p>
 ![Synchronized Batch Norm](/assets/posts_images/bn_sync.png)
-Here is an example:
+
+The following script shows how to use the `hvd.SyncBatchNormalization`. We
+intentionally set the different inputs `x0` for different ranks.
 ```python
 # Make sure that different ranks have different inputs.
 tf.random.set_seed(hvd.local_rank())
@@ -235,28 +245,27 @@ sync_bn = hvd.SyncBatchNormalization(axis=-1, momentum=0.5,
 print("moving_mean: ", sync_bn.moving_mean.numpy())
 print("moving_var: ", sync_bn.moving_variance.numpy())
 ```
-If we run is with two nodes `horovodrun -np 2 python tf_hvd_bn_sync.py`.
+When running with `horovodrun -np 2 python tf_hvd_bn_sync.py`, we can get the
+outputs below, where the batch mean/variance are actually group mean/variance
+after communication and the moving mean/variance are computed based on them.
 ```
-[1,1]:!!! batch_mean:[0.45652372 0.5745423  0.65629953]
 [1,0]:!!! batch_mean:[0.45652372 0.5745423  0.65629953]
-[1,1]:!!! batch_var:[0.0657616  0.0710133  0.00523123]
+[1,1]:!!! batch_mean:[0.45652372 0.5745423  0.65629953]
 [1,0]:!!! batch_var:[0.0657616  0.0710133  0.00523123]
+[1,1]:!!! batch_var:[0.0657616  0.0710133  0.00523123]
 [1,0]:moving_mean:[0.7282618  0.78727114 0.8281498 ]
 [1,1]:moving_mean:[0.7282618  0.78727114 0.8281498 ]
 [1,0]:moving_var:[0.5328808  0.53550667 0.50261563]
 [1,1]:moving_var:[0.5328808  0.53550667 0.50261563]
 ```
-As we can see, the batch mean/var are already group mean/var after sync and the
-moving/meanvar are called by it. One more thing needs to mention, the
-communication dot lines in Figure 4 might be not precisely what happened under
-the hood. The group
-mean are average of batch mean from different ranks which can be done with
-allreduce. But that is not the case
-for the variance. The group variance cannot averge batch variance from different
-  ranks rather it needs to recompute using the newly computed group_mean
-(x-group_mean)^2/nxbatch_size, the n is number of ranks.
+Note, the dot lines showing the communication in Figure 4 might not precisely
+depict what happens under the hood. Though the group mean is simply the average
+of batch means from different ranks that can be done through an allreduce, the
+group variance needs a new round of computation with the updated group mean
+instead of communication: `(x - group_mean) ^ 2 / (N⋅batch_size)`, where `N` is
+number of ranks.
 
-The  full code is
+The complete python script is
 [here](https://github.com/kaixih/dl_samples/blob/main/batch_norm/tf_hvd_bn_sync.py).
 
 ## Reference
