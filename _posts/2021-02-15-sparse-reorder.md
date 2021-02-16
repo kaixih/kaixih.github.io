@@ -17,7 +17,7 @@ space, we only store the non-zeros by using a matrix `indices` and an array
 convention, all sparse operations preserve the canonical ordering of the
 non-zeros along increasing dimension number. However, the ordering might be
 violated if we manually manipulate the non-zero entries, e.g., appending a new
-index and a new value to `indices` and `values` respectively. Therefore, we can
+index and a new value to `indices` and `values` respectively. Therefore, we need to
 call the `tf.sparse.reorder()` to explicitly enforce the ordering. While digging
 into the implementation of this API, I found it very enlightening how to sort
 the matrix of indices and corresponding values by using existing library sort
@@ -28,11 +28,11 @@ discuss the method.
 
 ## Question Description
 Suppose we have a sparse tensor represented by a (_N_, _ndims_) matrix `indices` and
-a (N) array `values`, where _N_ is the number of non-zeros and _ndims_ is the tensor
+a (_N_) array `values`, where _N_ is the number of non-zeros and _ndims_ is the tensor
 dimension. Each row of `indices` represents an index of a non-zero element and
 each position of `values` is a non-zero value. An index and its corresponding
 value together are called a non-zero entry. For example, the following inputs
-show 3 dimensional sparse tensor with invalid ordering.
+show a 3-dimensional sparse tensor with invalid ordering.
 ```
 N = 4;
 ndims = 3;
@@ -85,9 +85,9 @@ However, there are two major issues of this solution:
 
 Under the hood of `tf.sparse.reorder()`, it uses an assistant array `reorder`
 filled with values from 0 to _N-1_ which represents the orignal position of each
-entry. Then, we apply the sort over this array but with a custom comparitor that
+entry. Then, we apply the sort over this array but with a custom comparator that
 can access the `indices`. The output will be a permuted `reorder` and we can
-view it as that the correct `i`th entry should be from `reorder[i]`th `indices`
+view it in this way that the correct "`i`th" entry should be from "`reorder[i]`th" `indices`
 and `values`. The code structure is like:
 ```cpp
 IndexComparator sorter(indices, ndims);
@@ -102,8 +102,8 @@ for (int i = 0; i < N; i++) {
 ```
 
 With this design, the custom comparator is relatively simple to write: all we
-need to do is to use the position values in `reorder` to locate the index
-information of interest from `indices` and then conduct the real comparision
+need to do is to use the position values in `reorder` to locate the two indices
+of interest from `indices` and then conduct the real comparision
 from the major to minor dimensions.
 ```cpp
 class IndexComparator {
@@ -128,7 +128,7 @@ private:
 
 ```
 
-If we use the above inputs, the output is like:
+If we use the above inputs, the output would be like:
 ```
 permuted reorder:
 1, 0, 3, 2,
