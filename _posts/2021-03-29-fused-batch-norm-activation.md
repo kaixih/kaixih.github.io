@@ -76,7 +76,7 @@ gradient dy and the output y, the input x and input gamma from the forward op to
 the dx (input gradient), dγ/dβ (varialbel graidents), and dz (side input
 gradient).
 
-<p align=center> Fig 4. Fused Ops for BatchNorm+Add+ReLU </p> ![All
+<p align=center> Fig. Fused Ops for BatchNorm+Add+ReLU </p> ![All
 In a Graph](/assets/posts_images/bn_act_fuse.png)
 
 It is still worth to mention that this post focuses mainly on the scenario of training
