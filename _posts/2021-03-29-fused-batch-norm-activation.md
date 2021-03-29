@@ -21,8 +21,8 @@ As the convolution in the Conv-Bias-ReLU pattern, the BatchNorm is the most
 significant node in the BatchNorm-Add-ReLU pattern. Many articles have already
 demonstrated how the batch norm works and its backpropagation derived such as [this
 one](https://kevinzakka.github.io/2016/09/14/batch_normalization/). For
-simplicity, here we only need to know what the inputs and outputs of the batch
-norm in its forward and backward passes.
+simplicity, here we only need to know what are the required inputs and expected
+outputs of the batch norm in its forward and backward passes respectively.
 * Forward pass: it basically requires an x as the input and gamma/beta (γ/β) as
   two trainable variables. It can then output y.
 * Backward pass: it requires the backpropagated gradient input dy as well as the
