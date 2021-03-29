@@ -19,21 +19,21 @@ feasibility of the fusion for both forward and backprop stages.
 ## BatchNorm Pattern
 As the convolution in the Conv-Bias-ReLU pattern, the BatchNorm is the most
 significant node in the BatchNorm-Add-ReLU pattern. Many articles have already
-demonstrated how the batch norm works such as [this
+demonstrated how the batch norm works and its backpropagation derived such as [this
 one](https://kevinzakka.github.io/2016/09/14/batch_normalization/). For
 simplicity, here we only need to know what the inputs and outputs of the batch
 norm in its forward and backward passes.
 * Forward pass: it basically requires an x as the input and gamma/beta (γ/β) as
   two trainable variables. It can then output y.
 * Backward pass: it requires the backpropagated gradient input dy as well as the
-  x and gamma from the forward op to output the dx, dγ, and dβ. Note the beta is
+  x and γ from the forward op to output the dx, dγ, and dβ. Note the β is
   not needed.
 
 ## Add Pattern
-We assuem the add op is a simple binary addition and thus we need two input x
-and z (also called "side input") and then output y. The backprop is to get dx
+We assume the add op is a simple binary addition and thus we need two input x
+and z (also called the "side input") and then output y. The backprop is to get dx
 and dz by using the backpropagated gradient input dy. As the BiasAdd shown in
-"[this page](https://kaixih.github.io/cbr-fusion/)", the backprop is simply a
+"[this page](https://kaixih.github.io/cbr-fusion/)", the backprop is simply an
 "Identity" op to forward the dy and it doesn't require any input from the
 forward pass. The equations are below:
 
@@ -72,12 +72,14 @@ operation since the backward pass won't use any intemediate results from the
 fused operation.  The fused forward op will need input x, gamma/beta and side
 input z, and finally output y. For the backward pass, the ReluGrad and
 BatchNormGrad can also be fused together, which requires the backpropagated
-gradient dy and output y, input gamma, input x from the forward pass to output
-the dx (input gradient), dγ, and dβ (varialbel graidents) and dz (side input
-gradient).  <p align=center> Fig 4. Fused Ops for BatchNorm+Add+ReLU </p> ![All
+gradient dy and the output y, the input x and input gamma from the forward op to output
+the dx (input gradient), dγ/dβ (varialbel graidents), and dz (side input
+gradient).
+
+<p align=center> Fig 4. Fused Ops for BatchNorm+Add+ReLU </p> ![All
 In a Graph](/assets/posts_images/bn_act_fuse.png)
 
-It is worth to mention that this post focuses mainly on the scenario of training
+It is still worth to mention that this post focuses mainly on the scenario of training
 and discusses the fusion from the perspective of the data dependencies. In
 reality, the decision to fuse will be more complex than it
 seems.
