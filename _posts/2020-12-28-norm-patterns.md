@@ -97,7 +97,7 @@ Similaly, for the NHWC tensors, the axis argument can take the same (1,2,3) as
 in the NCHW use case.
 
 ## Instance Normalization
-Finally, in InstanceNorm, the expected axis is same with BatchNorm, i.e. the
+In InstanceNorm, the expected axis is same with BatchNorm, i.e. the
 channels axis. So, for the same example above, we would set axis=1. Internally,
 however, the batch axis will also be considered to compute the mean/var,
 producing the output in shape of (2, 12, 1, 1). On the other hand, the
@@ -125,6 +125,34 @@ are computed along the given axes.
 ```
 
 Similaly, the axis argument should take -1 or 3 when the NHWC is used.
+
+
+## Group Normalization
+In GroupNorm, the axis should also be set to channels. Besides, we can also
+split the channels into different groups and the mean/var
+computation will be within each groups. So, for the same example above, if we
+set the `axis=1` and `group=4`, the input tensor will be reshaped to
+(2, 4, 3, 3, 2) and the mean/var will be (2, 4, 1, 1, 1). The scale/offset will
+stay in the shape of (12,).
+
+```python
+G = 4
+group_norm = tfa.layers.GroupNormalization(groups=G, axis=1, center=True,
+                                           scale=True)
+y = group_norm(x)
+print("Gamma shape:", group_norm.weights[0].shape) # Output: (12,)
+print("Beta  shape:", group_norm.weights[1].shape) # Output: (12,)
+y = tf.reshape(y, shape=(N, G, C // G, H, W))
+print("Reshape by grouping:", y.shape) # Output: (2, 4, 3, 3, 2)
+may_pass = True
+for i in range(N):
+  for j in range(G):
+    if not np.isclose(tf.math.reduce_mean(y[i,j,...]).numpy(), 0.0,
+                      rtol=5e-06, atol=5e-06):
+      print(tf.math.reduce_mean(y[i,j,...]).numpy())
+      may_pass = False
+print("Test:", "Pass!" if may_pass else "Fail!")
+```
 
 ## Reference
 * [Tensorflow Batch Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)
