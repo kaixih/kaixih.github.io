@@ -34,6 +34,8 @@ less operations) by some graph optimization techniques. In TF, this is done via
 the TF grappler remapping pass. To better understand what patterns are matched,
 I created [this visualizing tool](https://github.com/kaixih/tf_op_graph) to
 print out op graphs before and after any specified grappler optimization pass.
+Please check out the sample scripts in the repo which include the GELU examples
+and how to generate the graph pictures.
 
 
 ## Approximate GELU Pattern
@@ -66,7 +68,11 @@ To enable this behavior, we need to turn on the cuBLASLt library
 ![GELU Approximate Pattern Fusion](/assets/posts_images/gelu_approximate.png)
 
 ## Exact GELU Pattern
-The op graphs of the exact GELU are same on CPU and GPU. Unfortunately, cuBLASLt doesn't support this form of GELU at this point, so that TF can only fuse the MatMul and BiasAdd as a single op _FusedMatMul. In comparison, the MKL is able to recognize the exact GELU and replace all of them as a single op like in the case of the approximate GELU.
+The op graphs of the exact GELU are same on CPU and GPU. Unfortunately, cuBLASLt
+doesn't support this form of GELU at this point, so the TF can only fuse the
+MatMul and BiasAdd as a single op _FusedMatMul. In comparison, the MKL is able
+to recognize the exact GELU and replace all of them as a single op like in the
+case of the approximate GELU.
 
 <p align=center> Fig 2. GELU Exact Pattern Fusion </p>
 
