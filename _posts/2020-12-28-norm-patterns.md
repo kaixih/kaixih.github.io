@@ -153,6 +153,13 @@ for i in range(N):
       may_pass = False
 print("Test:", "Pass!" if may_pass else "Fail!")
 ```
+## Summary
+To sum up, the shapes of mean/variance and scale/bias are summarized in the following table:
+
+|            | BatchNorm  | LayerNorm  | InstanceNorm | GroupNorm  |
+|------------|------------|------------|--------------|------------|
+| mean/var   | 1, C, 1, 1 | N, 1, 1, 1 | N, C, 1, 1   | N, G, 1, 1 |
+| scale/bias | 1, C, 1, 1 | 1, C, H, W | 1, C, 1, 1   | 1, C, 1, 1 |
 
 ## Reference
 * [Tensorflow Batch Normalization API](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)
