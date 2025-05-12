@@ -98,15 +98,15 @@ This relationship is illustrated in the Venn diagram below:
 
 ### Compatibility
 The following table shows the compatibility matrix between PTX and binary code generation options. While some combinations are included for completeness (like `-gencode arch=compute_100,code=sm_100a`) and may not be commonly used in practice, this overview helps illustrate the relationships between architecture and family-specific flags.
-- `-arch=compute_X` is compatible with `-code=sm_Y[a|f]*`. Examples:
+- `-arch=compute_X` is compatible with `-code=sm_X[a|f]*`. Examples:
   - `-gencode arch=compute_100,code=sm_100` => `OK`
   - `-gencode arch=compute_100,code=sm_100f` => `OK` (A)
   - `-gencode arch=compute_100,code=sm_100a` => `OK`
-- `-arch=compute_Xa` is compatible with `-code=sm_Ya`. Examples:
+- `-arch=compute_Xa` is compatible with `-code=sm_Xa`. Examples:
   - `-gencode arch=compute_100a,code=sm_100` => `nvcc fatal : Incompatible code generation`
   - `-gencode arch=compute_100a,code=sm_100f` => `nvcc fatal : Incompatible code generation`
   - `-gencode arch=compute_100a,code=sm_100a` => `OK`
-- `-arch=compute_Xf` is compatible with `-code=sm_Y[a|f]*`. Examples:
+- `-arch=compute_Xf` is compatible with `-code=sm_X[a|f]*`. Examples:
   - `-gencode arch=compute_100f,code=sm_100` => `OK` (Equivalent with the above A)
   - `-gencode arch=compute_100f,code=sm_100f` => `OK` (Equivalent with the above A)
   - `-gencode arch=compute_100f,code=sm_100a` => `OK`
